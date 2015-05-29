@@ -25,13 +25,8 @@
 /////spanish video version
 
 $(document).on("pageinit", "#pageMap", function(e, data){
-
-  var testAjax = $.ajax({
-    url: "http://localhost:3000/posts"
-  })
-  testAjax.done(function(response){
-    alert("Dabbed in ajax");
-  })
+  var map
+  var position = { }
 
   var defaultPos = new google.maps.LatLng(19.289168, -99.653440); //This is currently set to a location in Mexico
 
@@ -54,11 +49,12 @@ $(document).on("pageinit", "#pageMap", function(e, data){
     var myOptions = {
       zoom: 16,
       disableDefaultUI: true, //disables zoom toggle & other defaultUI clutter
+      zoomControl: true,
       center: latlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP //sets overlay
     };
 
-    var map = new google.maps.Map(document.getElementById("map-canvas"), myOptions); //don't use Jquery here
+    map = new google.maps.Map(document.getElementById("map-canvas"), myOptions); //don't use Jquery here
 
     var marker = new google.maps.Marker({
       position: latlng,
@@ -67,6 +63,28 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       animation: google.maps.Animation.DROP
     });
   };
+
+  var setMarker = function(position){
+    // debugger;
+    var space = new google.maps.Marker({
+      position: new google.maps.LatLng(position.lat, position.lon),
+      map: map,
+      title: "Space",
+      animation: google.maps.Animation.DROP
+    })
+  }
+
+  var testAjax = $.ajax({
+    url: "http://localhost:3000"
+  })
+
+  testAjax.done(function(response){
+    position.lat = response.spaces[0].latitude
+    position.lon = response.spaces[0].longitude
+
+    setMarker(position);
+
+  })
 
 
 });
