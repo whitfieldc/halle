@@ -26,6 +26,13 @@
 
 $(document).on("pageinit", "#pageMap", function(e, data){
 
+  var testAjax = $.ajax({
+    url: "http://localhost:3000/posts"
+  })
+  testAjax.done(function(response){
+    alert("Dabbed in ajax");
+  })
+
   var defaultPos = new google.maps.LatLng(19.289168, -99.653440); //This is currently set to a location in Mexico
 
   if (navigator.geolocation) {
