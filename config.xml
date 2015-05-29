@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <widget xmlns   = "http://www.w3.org/ns/widgets"
+        xmlns:gap   = "http://phonegap.com/ns/1.0"
+        id          = "com.halle.parking"
+        versionCode = "10"
+        version     = "1.0.0" >
+
+    <!-- versionCode is optional and Android only -->
+
+    <name>Halle Test</name>
+
+    <description>
+        Test for Halle parking app
+    </description>
+
+    <author href="https://whitfieldc.github.io" email="whitfield.cw@gmail.com">
+        Chuck Whitfield
+    </author>
+
+    <!--
+      If you do not want any permissions to be added to your app, add the
+      following tag to your config.xml; you will still have the INTERNET
+      permission on your app, which PhoneGap requires.
+    -->
+    <preference name="permissions" value="none"/>
+
+    <feature name="http://api.phonegap.com/1.0/geolocation"/>
+
+</widget>
