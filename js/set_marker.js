@@ -1,8 +1,9 @@
+
 $(document).on("pageinit", "#pageMap", function(e, data){
 
   // --------------------------------------
 
-  var mapOptions = { zoom: 8 };
+  var mapOptions = { zoom: 13 };
 
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
@@ -14,6 +15,7 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       var marker = new google.maps.Marker({
         position: initialLocation,
         map: map,
+        icon: spaceStale
       });
 
 // Add a space to the database -----------------------------------------
@@ -41,19 +43,24 @@ $(document).on("pageinit", "#pageMap", function(e, data){
 // Show available spaces from database -----------------------------------------
     // $('#map-canvas').on("tap", function(){
       var req = $.ajax({
-        url: 'http://mysterious-lake-9849.herokuapp.com',
+        url: 'http://localhost:3000',
         type: "GET",
       });
 
       req.done(function(response){
         parkingSpots = response
         for(i = 0; i < parkingSpots.length; i++){
+          console.log(parkingSpots[i].converted_time)
+          console.log(Date.now())
+
           console.log(parkingSpots[i]);
           var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(parkingSpots[i].latitude,parkingSpots[i].longitude),
                 map: map,
-                title: 'Hello World!',
-                id: parkingSpots[i].id
+                title:  parkingSpots[i].note,
+                icon: markerSelect(parkingSpots[i]),
+                id: parkingSpots[i].id,
+                creation: parkingSpots[i].created_at
           });
           google.maps.event.addListener(marker, 'click', spaceDetails);
         };
@@ -68,3 +75,21 @@ $(document).on("pageinit", "#pageMap", function(e, data){
     };
   });
 });
+
+var spaceFresh = "../img/mm_20_green.png"
+var spaceStale = "../img/mm_20_blue.png"
+
+var markerSelect = function(spaceObject){
+  var creation = spaceObject.converted_time
+  if ((Date.now() - creation) <= (5*60000)){
+    // console.log(Date.now() - creation)
+    return spaceFresh;
+  }
+
+  else{
+    console.log(Date.now() - creation)
+    return spaceStale;
+  }
+}
+
+
