@@ -15,7 +15,9 @@ $(document).on("pageinit", "#pageMap", function(e, data){
 
       var marker = new google.maps.Marker({
         position: initialLocation,
+        icon:'http://www.carpictures2015.com/wp-content/uploads/2014/11/2013%20Toyota%20iQ%20EV-kweU.jpg',
         map: map,
+        draggable: true
       });
 
     $('#map-canvas').on("tap", function(){
@@ -28,7 +30,7 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       });
 
       req.done(function(response){
-        alert(response);
+        // alert(response);
         parkingSpots = response
         for(i = 0; i < parkingSpots.length; i++){
           console.log(parkingSpots[i]);
