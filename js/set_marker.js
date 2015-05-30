@@ -1,7 +1,5 @@
 $(document).on("pageinit", "#pageMap", function(e, data){
 
-  // --------------------------------------
-
   var mapOptions = {
     zoom: 8,
   };
@@ -20,17 +18,32 @@ $(document).on("pageinit", "#pageMap", function(e, data){
         draggable: true
       });
 
+    $('#create-space').on('click', function(e) {
+      e.preventDefault();
+      var longitude = position.coords.longitude;
+      var latitude = position.coords.latitude;
+      var data = {space:{longitude:+longitude,latitude:+latitude}};
+      var headers = '{"Content-Type":"application/json"}';
+
+      $.ajax({
+        url: 'http://mysterious-lake-9849.herokuapp.com/spaces',
+        type: "POST",
+        data: data,
+        headers: headers
+        }
+      ).done(function(response) {
+        console.log(response);
+        alert(response);
+      });
+    });
+
     $('#map-canvas').on("tap", function(){
-
-      console.log("WHAT THE FUCK")
-
       var req = $.ajax({
         url: 'http://mysterious-lake-9849.herokuapp.com',
-        type: "get",
+        type: "GET",
       });
 
       req.done(function(response){
-        // alert(response);
         parkingSpots = response
         for(i = 0; i < parkingSpots.length; i++){
           console.log(parkingSpots[i]);
