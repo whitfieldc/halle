@@ -63,7 +63,10 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       console.log(this.id)
       // debugger
       // $('#space-options').text(this.id)
-      // $('#space-options').panel("open")
+      $('#space-options').popup("open", {
+        overlayTheme: "a",
+        positionTo: "window"
+      })
       // $(this).show('#space-options')
     };
   });
