@@ -1,28 +1,4 @@
-  // function initialize() {
-  //   var mapProp = {
-  //     center:new google.maps.LatLng(37.7833,-122.4167),
-  //     zoom:5,
-  //     mapTypeId:google.maps.MapTypeId.ROADMAP
-  //   };
-  //   var map=new google.maps.Map(document.getElemendddtById("googleMap"), mapProp);
-  // }
-  // google.maps.event.addDomListener(window, 'load', initialize);
 
-  ///// PG Geolocation
-  // function DOMLoaded(){
-  //   document.addEventListener("deviceready", phonegapLoaded, false);
-  // }
-
-  // function phonegapLoaded(){
-  //   navigator.geolocation.getCurrentPosition(onSuccess);
-  // }
-
-  // function onSuccess(position) {
-  //   alert("Timestamp: " + new Date(position.timestamp) );
-  // };
-
-
-/////spanish video version
 
 $(document).on("pageinit", "#pageMap", function(e, data){
   var map
@@ -79,6 +55,7 @@ $(document).on("pageinit", "#pageMap", function(e, data){
   })
 
   testAjax.done(function(response){
+    console.log(response)
     position.lat = response.spaces[0].latitude
     position.lon = response.spaces[0].longitude
 
