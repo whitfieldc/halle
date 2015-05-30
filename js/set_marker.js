@@ -23,7 +23,7 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       console.log("WHAT THE FUCK")
 
       var req = $.ajax({
-        url: 'http://localhost:4000',
+        url: 'http://mysterious-lake-9849.herokuapp.com',
         type: "get",
       });
 
