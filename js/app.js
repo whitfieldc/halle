@@ -1,5 +1,3 @@
-
-
 $(document).on("pageinit", "#pageMap", function(e, data){
   var map
   var position = { }
