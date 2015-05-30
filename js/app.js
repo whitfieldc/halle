@@ -21,12 +21,35 @@
   //   alert("Timestamp: " + new Date(position.timestamp) );
   // };
 
+  // var setMarker = function(position){
+  //   // debugger;
+  //   var space = new google.maps.Marker({
+  //     position: new google.maps.LatLng(position.lat, position.lon),
+  //     map: map,
+  //     title: "Space",
+  //     animation: google.maps.Animation.DROP
+  //   })
+  // }
+
+  // var testAjax = $.ajax({
+  //   url: "http://localhost:3000"
+  // })
+
+  // testAjax.done(function(response){
+  //   position.lat = response.spaces[0].latitude
+  //   position.lon = response.spaces[0].longitude
+
+  //   setMarker(position);
+
+  // })
+
 
 /////spanish video version
 
+var map
+
+
 $(document).on("pageinit", "#pageMap", function(e, data){
-  var map
-  var position = { }
 
   var defaultPos = new google.maps.LatLng(19.289168, -99.653440); //This is currently set to a location in Mexico
 
@@ -62,29 +85,37 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       title: "My position",
       animation: google.maps.Animation.DROP
     });
+
+    $('#map-canvas').on('tap', function (){
+      // $.ajax({
+      //   url: "http://localhost:3000",
+      //   type: "get",
+      //   }
+      // ).done(function(response) {
+      //   debugger
+      //   console.log(response)
+      // })
+    });
   };
-
-  var setMarker = function(position){
-    // debugger;
-    var space = new google.maps.Marker({
-      position: new google.maps.LatLng(position.lat, position.lon),
-      map: map,
-      title: "Space",
-      animation: google.maps.Animation.DROP
-    })
-  }
-
-  var testAjax = $.ajax({
-    url: "http://localhost:3000"
-  })
-
-  testAjax.done(function(response){
-    position.lat = response.spaces[0].latitude
-    position.lon = response.spaces[0].longitude
-
-    setMarker(position);
-
-  })
-
-
 });
+
+displayMarkers = function() {
+  var point = new google.maps.Marker({
+    position: new google.maps.LatLng(37.784972, -122.399545),
+    map: map,
+    title: "My position",
+    animation: google.maps.Animation.DROP
+  });
+};
+
+var ajaxCall = function() {
+  $.ajax({
+    url: "http://localhost:3000",
+    type: "get",
+    }
+  ).done(function(response) {
+    debugger
+    console.log(response)
+  })
+};
+
