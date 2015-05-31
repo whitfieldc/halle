@@ -25,7 +25,8 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       var headers   = '{"Content-Type":"application/json"}';
 
       $.ajax({
-        url: 'http://mysterious-lake-9849.herokuapp.com/spaces',
+        // url: 'http://calm-island-3256.herokuapp.com/spaces',
+        url: 'http://localhost:3000/spaces',
         type: "POST",
         data: data,
         headers: headers
@@ -33,17 +34,20 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       ).done(function(response) {
       //   // drop new marker
       //   // notify user of successful or unsuccessful post
-        alert(response);
-      //   $('#successful').popup("open", {
-      //     overlayTheme: "a",
-      //     positionTo: "window",
-      //   })
-      });
+        $('#successful').popup("open", {
+          overlayTheme: "a",
+          positionTo: "window",
+        })
+      }).fail(function(response) {
+        console.log(response);
+        alert("shits fucked up");
+      })
     });
 
 // Show available spaces from database -----------------------------------------
     var req = $.ajax({
-      url: 'http://mysterious-lake-9849.herokuapp.com',
+      // url: 'http://calm-island-3256.herokuapp.com',
+      url: 'http://localhost:3000',
       type: "GET",
     });
 
