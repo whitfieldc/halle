@@ -3,7 +3,11 @@ $(document).on("pageinit", "#pageMap", function(e, data){
 
   // --------------------------------------
 
-  var mapOptions = { zoom: 13 };
+  var mapOptions = {
+        zoom: 13,
+        disableDefaultUI: true,
+        zoomControl: true
+        };
 
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
@@ -15,7 +19,7 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       var marker = new google.maps.Marker({
         position: initialLocation,
         map: map,
-        icon: spaceStale
+        icon: "../img/marker.png"
       });
 
 // Add a space to the database -----------------------------------------
@@ -27,14 +31,23 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       var headers   = '{"Content-Type":"application/json"}';
 
       $.ajax({
-        url: 'http://mysterious-lake-9849.herokuapp.com/spaces',
+        url: 'http://calm-island-3256.herokuapp.com/spaces',
         type: "POST",
         data: data,
         headers: headers
         }
       ).done(function(response) {
         console.log(response);
-        alert(response);
+        var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(response.latitude,response.longitude),
+                map: map,
+                title:  response.note,
+                icon: markerSelect(response),
+                id: response.id,
+                creation: response.converted_time,
+                animation: google.maps.Animation.DROP,
+                zIndex: google.maps.Marker.MAX_ZINDEX + 1
+          });
       });
     });
 
@@ -43,7 +56,7 @@ $(document).on("pageinit", "#pageMap", function(e, data){
 // Show available spaces from database -----------------------------------------
     // $('#map-canvas').on("tap", function(){
       var req = $.ajax({
-        url: 'http://localhost:3000',
+        url: 'http://calm-island-3256.herokuapp.com',
         type: "GET",
       });
 
@@ -60,7 +73,7 @@ $(document).on("pageinit", "#pageMap", function(e, data){
                 title:  parkingSpots[i].note,
                 icon: markerSelect(parkingSpots[i]),
                 id: parkingSpots[i].id,
-                creation: parkingSpots[i].created_at
+                creation: parkingSpots[i].converted_time
           });
           google.maps.event.addListener(marker, 'click', spaceDetails);
         };
