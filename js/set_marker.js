@@ -24,7 +24,7 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
       var marker = new google.maps.Marker({
         position: initialLocation,
         map: map,
-        icon: "../img/marker.png"
+        icon: currentLoc
         //doesn't load on mobile
       });
 
@@ -120,8 +120,34 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
   });
 });
 
-var spaceFresh = "../img/mm_20_green.png"
-var spaceStale = "../img/mm_20_blue.png"
+var currentLoc = {
+        path: fontawesome.markers.EXCLAMATION,
+        scale: 0.65,
+        strokeWeight: 0.2,
+        strokeColor: 'black',
+        strokeOpacity: 1,
+        fillColor: '#263238',
+        fillOpacity: 1
+    }
+
+var spaceFresh = {
+        path: fontawesome.markers.EXCLAMATION,
+        scale: 0.5,
+        strokeWeight: 0.2,
+        strokeColor: 'black',
+        strokeOpacity: 1,
+        fillColor: '#76FF03',
+        fillOpacity: 1
+    }
+var spaceStale = {
+        path: fontawesome.markers.EXCLAMATION,
+        scale: 0.5,
+        strokeWeight: 0.2,
+        strokeColor: 'black',
+        strokeOpacity: 1,
+        fillColor: '#AD1457',
+        fillOpacity: 1
+    }
 
 var markerSelect = function(spaceObject){
   var creation = spaceObject.converted_time
