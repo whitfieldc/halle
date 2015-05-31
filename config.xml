@@ -6,6 +6,7 @@
         version     = "1.0.0" >
 
     <!-- versionCode is optional and Android only -->
+    <plugin name="Geolocation" value="org.apache.cordova.GeoBroker"/>
 
     <name>Halle Test</name>
 

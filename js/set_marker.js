@@ -2,7 +2,9 @@ $(document).on("pageinit", "#pageMap", function(e, data){
 
   // --------------------------------------
 
-  var mapOptions = { zoom: 15 };
+  var mapOptions = { zoom: 15,
+                     disableDefaultUI: true,
+                    zoomControl: true };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
@@ -17,6 +19,8 @@ $(document).on("pageinit", "#pageMap", function(e, data){
     });
 
     var spaceId
+
+
 
 // Add a space to the database -----------------------------------------
     $('#create-space').on('tap', function(e) {
@@ -97,4 +101,5 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       //https://www.google.com/maps/dir/Current+Location/43.12345,-76.12345
     });
   });
+
 });
