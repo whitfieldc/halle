@@ -1,5 +1,6 @@
 $(document).on("pageinit", "#pageMap", function(e, data){
 
+
   // --------------------------------------
 
   var mapOptions = { zoom: 8 };

@@ -1,6 +1,4 @@
-$(document).on(
-  'mobileinit',
-  function()
+$(document).on('mobileinit', function()
   {
     // Default pages' transition effect
     $.mobile.defaultPageTransition = 'slide';

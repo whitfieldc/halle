@@ -4,6 +4,7 @@
     <meta charset='utf-8' />
     <title>App</title>
     <meta name="viewport" content="width-device-width, initial-scale-1" />
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
     <script src="js/jquery-2.1.4.min.js"></script>
     <script charset="utf-8" src="js/ajax.js"></script>
     <script charset="utf-8" src="js/set_marker.js"></script>
@@ -14,15 +15,22 @@
 
 </head>
 <body>
-  <div id="pageMap" data-role="page" data-url="map-page">
+  <div id="pageMap" data-role="page">
+
+    <div data-role="panel" id="myPanel" data-position="">
+      <h2>Panel Header..</h2>
+      <p>Some text..</p>
+    </div>
 
     <header data-role="header">
       <h1> Where I parked my Halle</h1>
+      <a href="#myPanel" class="ui-btn ui-btn-inline">Open Panel</a>
+
       <button id="create-space">List Opening</button>
     </header>
 
     <div id="content" data-role="content">
-      <div id="map-canvas" style="padding:0;margin:0px;width:100%;height:100%;position:absolute">
+      <div id="map-canvas" style="padding:0;margin:0px;width:100%;height:200px;">
       </div>
     </div>
 
