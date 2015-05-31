@@ -1,5 +1,10 @@
 
-$(document).on("pageinit", "#pageMap", function(e, data){
+$(document).on("pagecreate", "#pageMap", function(e, data){
+
+    $(".ui-content", this).css({
+       height: $(window).height(),
+       width: $(window).width()
+   });
 
   // --------------------------------------
 
