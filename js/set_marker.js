@@ -2,7 +2,7 @@ $(document).on("pageinit", "#pageMap", function(e, data){
 
   // --------------------------------------
 
-  var mapOptions = { zoom: 8 };
+  var mapOptions = { zoom: 15 };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
@@ -16,9 +16,14 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       map: map,
     });
 
+    var spaceId
+
 // Add a space to the database -----------------------------------------
     $('#create-space').on('tap', function(e) {
       e.preventDefault();
+
+      // add ability to move marker & add note to parking spot before saving current location as open space
+
       var longitude = position.coords.longitude;
       var latitude  = position.coords.latitude;
       var data      = {space:{longitude:+longitude,latitude:+latitude}};
@@ -30,13 +35,12 @@ $(document).on("pageinit", "#pageMap", function(e, data){
         type: "POST",
         data: data,
         headers: headers
-        }
-      ).done(function(response) {
-      //   // drop new marker
-      //   // notify user of successful or unsuccessful post
+      }).done(function(response) {
+        // drop new marker
         $('#successful').popup("open", {
           overlayTheme: "a",
           positionTo: "window",
+          // make disappear after 1s
         })
       }).fail(function(response) {
         console.log(response);
@@ -66,11 +70,29 @@ $(document).on("pageinit", "#pageMap", function(e, data){
     });
 
     var spaceDetails = function() {
-      // $('#space-options').text(this.id)
+      // $('#space-options').text(this.note)
+      spaceId = this.id
       $('#space-options').popup("open", {
         overlayTheme: "a",
         positionTo: "window",
       })
     };
+
+    $('#claim').on('click', function(e){
+      e.preventDefault();
+      var headers = '{"Content-Type":"application/json"}';
+      $.ajax({
+        // url: 'http://calm-island-3256.herokuapp.com',
+        url: 'http://localhost:3000/spaces/'+spaceId,
+        type: 'PUT',
+        headers: headers,
+        data: '' //test without this
+      }).done(function(response) {
+        alert("success!")
+        // navigation begins
+      }).fail(function(response) {
+        alert("fuck you guys")
+      })
+    });
   });
 });
