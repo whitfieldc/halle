@@ -30,8 +30,8 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       var headers   = '{"Content-Type":"application/json"}';
 
       $.ajax({
-        // url: 'http://calm-island-3256.herokuapp.com/spaces',
-        url: 'http://localhost:3000/spaces',
+        url: 'http://calm-island-3256.herokuapp.com/spaces',
+        // url: 'http://localhost:3000/spaces',
         type: "POST",
         data: data,
         headers: headers
@@ -50,8 +50,8 @@ $(document).on("pageinit", "#pageMap", function(e, data){
 
 // Show available spaces from database -----------------------------------------
     var req = $.ajax({
-      // url: 'http://calm-island-3256.herokuapp.com',
-      url: 'http://localhost:3000',
+      url: 'http://calm-island-3256.herokuapp.com',
+      // url: 'http://localhost:3000',
       type: "GET",
     });
 
@@ -80,10 +80,10 @@ $(document).on("pageinit", "#pageMap", function(e, data){
 
     $('#claim').on('click', function(e){
       e.preventDefault();
-      var headers = '{"Content-Type":"application/json"}';
+      var headers = '{"Content-Type":"application/json"}'
       $.ajax({
-        // url: 'http://calm-island-3256.herokuapp.com',
-        url: 'http://localhost:3000/spaces/'+spaceId,
+        url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+        // url: 'http://localhost:3000/spaces/'+spaceId,
         type: 'PUT',
         headers: headers,
         data: '' //test without this
@@ -93,6 +93,8 @@ $(document).on("pageinit", "#pageMap", function(e, data){
       }).fail(function(response) {
         alert("fuck you guys")
       })
+      // EXAMPLE NAVIGATION LINK
+      //https://www.google.com/maps/dir/Current+Location/43.12345,-76.12345
     });
   });
 });
