@@ -10,29 +10,34 @@
     <script charset="utf-8" src="js/set_marker.js"></script>
     <script src="js/jquery.mobile.config.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script> <!-- what's this sensor=false doing? -->
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script src="cordova.js"></script>
 
 </head>
 <body>
   <div id="pageMap" data-role="page" data-url="map-page">
-    
-    <!-- <a href="#popupBasic" data-rel="popup">Open Popup</a> -->
 
     <div data-role="popup" id="space-options">
       <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-      <p>This is a completely basic popup, no options set.<p>
+      <p>This is a completely basic popup<p>
+      <button>Claim parking</button>
+    </div>
+
+    <div data-role="popup" id="successful">
+      <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+      <p>You're listing was successful!</p>
     </div>
     
     <header data-role="header">
       <h1>Halle</h1>
+      <button id="create-space">List Opening</button>
     </header>
 
     <div id="content" data-role="content">
-      <button id="create-space">List Opening</button>
-      <div id="map-canvas" style="padding:0;margin:0px;width:90%;height:75%;position:absolute">
+      <div id="map-canvas" style="padding:0;margin:0px;width:90%;height:85%;position:absolute">
       </div>
     </div>
+
   </div>
 </body>
 </html>

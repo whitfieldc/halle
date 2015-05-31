@@ -31,15 +31,17 @@ $(document).on("pageinit", "#pageMap", function(e, data){
         headers: headers
         }
       ).done(function(response) {
-        // drop new marker
-        // notify user of successful or unsuccessful post
-        // console.log(response);
-        // alert(response);
+      //   // drop new marker
+      //   // notify user of successful or unsuccessful post
+        alert(response);
+      //   $('#successful').popup("open", {
+      //     overlayTheme: "a",
+      //     positionTo: "window",
+      //   })
       });
     });
 
 // Show available spaces from database -----------------------------------------
-    // $('#map-canvas').on("tap", function(){
     var req = $.ajax({
       url: 'http://mysterious-lake-9849.herokuapp.com',
       type: "GET",
@@ -58,16 +60,13 @@ $(document).on("pageinit", "#pageMap", function(e, data){
         google.maps.event.addListener(marker, 'click', spaceDetails);
       };
     });
-    // })
+
     var spaceDetails = function() {
-      console.log(this.id)
-      // debugger
       // $('#space-options').text(this.id)
       $('#space-options').popup("open", {
         overlayTheme: "a",
-        positionTo: "window"
+        positionTo: "window",
       })
-      // $(this).show('#space-options')
     };
   });
 });
