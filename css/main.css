@@ -1,0 +1,8 @@
+#map-canvas {
+    padding: 0;
+    position : absolute !important;
+    top : 40px !important;
+    right : 0;
+    bottom : 58px !important;
+    left : 0 !important;
+}
