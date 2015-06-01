@@ -1,10 +1,19 @@
-
 $(document).on("pagecreate", "#pageMap", function(e, data){
 
-    $(".ui-content", this).css({
-       height: $(window).height(),
-       width: $(window).width()
-   });
+  var ref = new Firebase("https://halle.firebaseio.com");
+  
+  ref.authWithOAuthPopup("facebook", function(error, authData) {
+    if (error) {
+      console.log("Login Failed!", error);
+    } else {
+      console.log("Authenticated successfully with payload:", authData);
+    }
+  });
+
+  $(".ui-content", this).css({
+     height: $(window).height(),
+     width: $(window).width()
+  });
 
   // --------------------------------------
 
