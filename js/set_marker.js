@@ -16,7 +16,11 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-  navigator.geolocation.getCurrentPosition(function(position) {
+  // navigator.geolocation.watchPosition(function(position){
+  //   alert(position.coords.latitude)
+  // })
+
+  navigator.geolocation.watchPosition(function(position) {
     initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
     map.setCenter(initialLocation);
 
@@ -24,7 +28,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
       var marker = new google.maps.Marker({
         position: initialLocation,
         map: map,
-        icon: currentLoc
+        icon: currentLoc,
+        animation: google.maps.Animation.DROP
         //doesn't load on mobile
       });
 
@@ -64,7 +69,7 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         });
       }).fail(function(response) {
         console.log(response);
-        alert("shits fucked up");
+        alert("space marking is fucked up");
       });
     });
 
