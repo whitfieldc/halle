@@ -57,7 +57,6 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         var note      = $(this).siblings('div').children().val()
         var data      = {space:{longitude:+longitude,latitude:+latitude,note:note}};
         var headers   = '{"Content-Type":"application/json"}';
-        var test = new Firebase('https://halle.firebaseio.com/test');
 
         $.ajax({
           url: 'http://calm-island-3256.herokuapp.com/spaces',
@@ -82,7 +81,6 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
                   animation: google.maps.Animation.DROP,
                   zIndex: google.maps.Marker.MAX_ZINDEX + 1
           });
-          test.push({note: response.note});
         }).fail(function(response) {
           console.log(response);
           alert("shits fucked up");
