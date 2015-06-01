@@ -121,6 +121,7 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
     $('#claim').on('click', function(e){
       e.preventDefault();
       var headers = '{"Content-Type":"application/json"}';
+      var button = $(this)
       $.ajax({
         url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
         // url: 'http://localhost:3000/spaces/'+spaceId,
@@ -128,8 +129,13 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         headers: headers,
         data: '' //test without this
       }).done(function(response) {
-        console.log("spot claimed")
-        // add claim confirmation popup?
+        $('#space-options p').remove();
+        $('#space-options a').remove();
+        $('#space-options button').remove();
+        $('#space-options h4').text('Claimed √');
+        setTimeout(function () {
+          $('#space-options').popup('close');
+        }, 1500);
         // navigation begins
       }).fail(function(response) {
         alert("fuck you guys")
@@ -172,7 +178,6 @@ var spaceStale = {
 var markerSelect = function(spaceObject){
   var creation = spaceObject.converted_time
   if ((Date.now() - creation) <= (5*60000)){
-    // console.log(Date.now() - creation)
     return spaceFresh;
   }
 
