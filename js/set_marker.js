@@ -9,8 +9,10 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
     var ref = new Firebase("https://halle.firebaseio.com");
     ref.authWithOAuthPopup("facebook", function(error, authData) {
       if (error) {
+        alert("login failed!");
         console.log("Login Failed!", error);
       } else {
+        alert("login successful!", authData);
         console.log("Authenticated successfully with payload:", authData);
       }
     });
