@@ -41,6 +41,13 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         icon: currentLoc
       });
 
+      //Center Map Button ------------------------
+      var centerControlDiv = document.createElement('div');
+      var centerControl = new CenterControl(centerControlDiv, initialLocation, map);
+
+      centerControlDiv.index = 1;
+      map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(centerControlDiv);
+
 // Add a space to the database -----------------------------------------
 // TO DO : Add ability to move marker before saving current location as open space -----------------------------------------
     $('#create-space').on('tap', function(e) {
@@ -186,5 +193,36 @@ var markerSelect = function(spaceObject){
     return spaceStale;
   }
 }
+var CenterControl = function(controlDiv, centerLocation, map) {
 
+  // Set CSS for the control border
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = 'red';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.borderRadius = '35px';
+  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '4px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Center';
+  controlUI.appendChild(controlText);
+
+  // Setup the click event listeners: simply set the map to
+  // Chicago
+  google.maps.event.addDomListener(controlUI, 'click', function() {
+    map.setCenter(centerLocation)
+  });
+
+}
 
