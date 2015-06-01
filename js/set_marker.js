@@ -41,39 +41,48 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
     $('#create-space').on('tap', function(e) {
       e.preventDefault();
 
-      // add ability to move marker & add note to parking spot before saving current location as open space
-
-      var longitude = position.coords.longitude;
-      var latitude  = position.coords.latitude;
-      var data      = {space:{longitude:+longitude,latitude:+latitude}};
-      var headers   = '{"Content-Type":"application/json"}';
-
-      $.ajax({
-        url: 'http://calm-island-3256.herokuapp.com/spaces',
-        // url: 'http://localhost:3000/spaces',
-        type: "POST",
-        data: data,
-        headers: headers
-      }).done(function(response) {
-        // drop new marker
-        $('#successful').popup("open", {
+      $('#post-space').popup("open", {
           overlayTheme: "a",
           positionTo: "window",
-          // make disappear after 1s
         })
-        var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(response.latitude,response.longitude),
-                map: map,
-                title:  response.note,
-                icon: markerSelect(response),
-                id: response.id,
-                creation: response.converted_time,
-                animation: google.maps.Animation.DROP,
-                zIndex: google.maps.Marker.MAX_ZINDEX + 1
+
+
+
+      // add ability to move marker & add note to parking spot before saving current location as open space
+
+      $('#add-space').on('tap', function(e) {
+        var longitude = position.coords.longitude;
+        var latitude  = position.coords.latitude;
+        var note      = $(this).siblings('div').children().val()
+        var data      = {space:{longitude:+longitude,latitude:+latitude,note:note}};
+        var headers   = '{"Content-Type":"application/json"}';
+        $.ajax({
+          // url: 'http://calm-island-3256.herokuapp.com/spaces',
+          url: 'http://localhost:3000/spaces',
+          type: "POST",
+          data: data,
+          headers: headers
+        }).done(function(response) {
+          $('#add-space').remove();
+          $('#note').remove();
+          $('#popup-par').text('Added √');
+          setTimeout(function () {
+            $('#post-space').popup('close');
+          }, 1500);
+          var marker = new google.maps.Marker({
+                  position: new google.maps.LatLng(response.latitude,response.longitude),
+                  map: map,
+                  title:  response.note,
+                  icon: markerSelect(response),
+                  id: response.id,
+                  creation: response.converted_time,
+                  animation: google.maps.Animation.DROP,
+                  zIndex: google.maps.Marker.MAX_ZINDEX + 1
+          });
+        }).fail(function(response) {
+          console.log(response);
+          alert("shits fucked up");
         });
-      }).fail(function(response) {
-        console.log(response);
-        alert("shits fucked up");
       });
     });
 

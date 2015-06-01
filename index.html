@@ -21,14 +21,16 @@
 <body>
   <div id="pageMap" data-role="page" data-url="map-page">
 
+    <div data-role="popup" id="post-space">
+      <p id="popup-par">ADD A PARKING SPACE</p>
+      <input id="note" type="text">
+      <button id="add-space">Add Space</button>
+    </div>
+
     <div data-role="popup" id="space-options">
       <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
       <p>This is a completely basic popup<p>
       <button id="claim">Claim parking</button>
-    </div>
-
-    <div data-role="popup" id="successful">
-      <p>Your listing was successful!</p>
     </div>
 
     <header data-role="header">
