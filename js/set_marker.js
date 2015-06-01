@@ -20,7 +20,7 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
   //   alert(position.coords.latitude)
   // })
 
-  navigator.geolocation.watchPosition(function(position) {
+  navigator.geolocation.getCurrentPosition(function(position) {
     initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
     map.setCenter(initialLocation);
 
