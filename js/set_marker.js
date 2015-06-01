@@ -37,8 +37,6 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
           positionTo: "window",
         })
 
-
-
       // add ability to move marker & add note to parking spot before saving current location as open space
 
       $('#add-space').on('tap', function(e) {
@@ -48,8 +46,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         var data      = {space:{longitude:+longitude,latitude:+latitude,note:note}};
         var headers   = '{"Content-Type":"application/json"}';
         $.ajax({
-          // url: 'http://calm-island-3256.herokuapp.com/spaces',
-          url: 'http://localhost:3000/spaces',
+          url: 'http://calm-island-3256.herokuapp.com/spaces',
+          // url: 'http://localhost:3000/spaces',
           type: "POST",
           data: data,
           headers: headers
@@ -93,7 +91,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
           var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(parkingSpots[i].latitude,parkingSpots[i].longitude),
                 map: map,
-                title:  parkingSpots[i].note,
+                title:  parkingSpots[i].note, // should this be something else? What if the note is long?
+                // note: parkingSpots[i].note
                 icon: markerSelect(parkingSpots[i]), //set marker according to age
                 id: parkingSpots[i].id,
                 creation: parkingSpots[i].converted_time
@@ -104,13 +103,18 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
     var spaceDetails = function() {
       // $('#space-options').text(this.note)
       spaceId = this.id
+      debugger
       $('#space-options').popup("open", {
         overlayTheme: "a",
         positionTo: "window",
       })
+      $('p').text(this.title);
+
+      // debugger
     };
 
     $('#claim').on('click', function(e){
+      debugger
       e.preventDefault();
       var headers = '{"Content-Type":"application/json"}';
       $.ajax({
