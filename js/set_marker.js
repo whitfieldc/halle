@@ -44,12 +44,35 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         icon: currentLoc
       });
 
-      //Center Map Button ------------------------
+//Center Map Button ------------------------
       var centerControlDiv = document.createElement('div');
       var centerControl = new CenterControl(centerControlDiv, initialLocation, map);
 
       centerControlDiv.index = 1;
       map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(centerControlDiv);
+
+//Directions ATTEMPT -------------------------------------------
+      var directionsDisplay;
+      var directionsService = new google.maps.DirectionsService();
+
+      directionsDisplay = new google.maps.DirectionsRenderer();
+      directionsDisplay.setMap(map);
+
+
+      var calcRoute = function(start, finish) {
+        var request = {
+            origin:start,
+            destination:finish,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        directionsService.route(request, function(response, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            // setAllMap(null);
+            directionsDisplay.setDirections(response);
+          }
+          else{alert("Server Error: Directions Unavailable")}
+        });
+      }
 
 // Add a space to the database -----------------------------------------
 // TO DO : Add ability to move marker before saving current location as open space -----------------------------------------
@@ -147,6 +170,7 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
           $('#space-options').popup('close');
         }, 1500);
         // navigation begins
+        calcRoute(initialLocation, response.latitude +","+ response.longitude)
       }).fail(function(response) {
         alert("fuck you guys")
       })
@@ -226,5 +250,5 @@ var CenterControl = function(controlDiv, centerLocation, map) {
   google.maps.event.addDomListener(controlUI, 'click', function() {
     map.setCenter(centerLocation)
   });
-
 }
+
