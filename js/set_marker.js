@@ -3,6 +3,7 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
   var ref = new Firebase("https://halle.firebaseio.com");
 
 // Firebase Facebook login -----------------------------------------
+// Get login to be first page you see with choice between google and facebook
   $('#login').on('tap', function(e) {
     e.preventDefault();
     var ref = new Firebase("https://halle.firebaseio.com");
@@ -247,7 +248,5 @@ var CenterControl = function(controlDiv, centerLocation, map) {
   google.maps.event.addDomListener(controlUI, 'click', function() {
     map.setCenter(centerLocation)
   });
-
 }
-
 
