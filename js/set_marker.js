@@ -1,5 +1,6 @@
 $(document).on("pagecreate", "#pageMap", function(e, data){
 
+
     $(".ui-content", this).css({
        height: $(window).height(),
        width: $(window).width()
@@ -14,6 +15,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+  route = false;   //Specifies whether a route has been created
+  directionsService = new google.maps.DirectionsService();   //DirectionsService object
 
   navigator.geolocation.getCurrentPosition(function(position) {
     initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
@@ -26,6 +29,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         icon: currentLoc
         //doesn't load on mobile
       });
+
+      latitudeAndLongitudeCurrent = marker.position;
 
 // Add a space to the database -----------------------------------------
     $('#create-space').on('tap', function(e) {
@@ -102,7 +107,6 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
     var spaceDetails = function() {
       // $('#space-options').text(this.note)
       spaceId = this.id
-      debugger
       $('#space-options').popup("open", {
         overlayTheme: "a",
         positionTo: "window",
@@ -113,7 +117,6 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
     };
 
     $('#claim').on('click', function(e){
-      debugger
       e.preventDefault();
       var headers = '{"Content-Type":"application/json"}';
       $.ajax({
@@ -123,7 +126,28 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         headers: headers,
         data: '' //test without this
       }).done(function(response) {
-        alert("success!")
+      var theDestination = new google.maps.LatLng("37.786278", "-122.409705");
+      var request =
+    {
+        origin: latitudeAndLongitudeCurrent,
+        destination: theDestination,
+        travelMode: google.maps.DirectionsTravelMode.WALKING
+    };
+    debugger;
+   
+    directionsService.route(request,
+      function(result, status)
+      {
+        if (status == google.maps.DirectionsStatus.OK)
+        {
+          directionsDisplay.setOptions({ preserveViewport: true });
+          directionsDisplay.setDirections(result);
+          route=true;
+        }
+      }
+    );
+
+
         // navigation begins
       }).fail(function(response) {
         alert("fuck you guys")
@@ -173,4 +197,5 @@ var markerSelect = function(spaceObject){
     return spaceStale;
   }
 }
+
 
