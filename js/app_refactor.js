@@ -16,7 +16,18 @@ var userData;
 
   $(document).on("pagecreate", "#page-map", function(e, data){
 
-    console.log(gps.checkPosition());
+    var mapOptions = {
+      zoom: 13,
+      disableDefaultUI: true,
+      zoomControl: true
+    };
+
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+    centerMap(map);
+    // console.log(gps.getLocation().then(function(response){
+    //   console.log(response);
+    // }));
 
     console.log("PAGA MAPA!");
     console.log(userData);
@@ -39,28 +50,6 @@ var userData;
     return promise;
   };
 
-  var gps = (function(){
-    var currentPosition = function(position){
-      return "Sean";
-    }
-    var checkPosition = function(){
-      navigator.geolocation.getCurrentPosition(currentPosition)
-    }
-    return {
-      checkPosition: checkPosition
-    };
-  })();
-
-  var renderMap = function(){
-
-  };
-
-  var centerMap = function(){
-
-  };
-
-  //ajax calls
-
   var ajaxLogin = function(authData){
     userId = authData.facebook.id
     var ajaxData = {user:{oauth_id:userId}};
@@ -77,3 +66,22 @@ var userData;
       console.log("FAILURE")
     });
   }
+
+  var centerMap = function(map){
+    getLocation().then(function(response){
+      map.setCenter(response);
+    })
+  };
+
+  var getLocation = function() {
+    var promise = new Promise(function(resolve, reject){
+      navigator.geolocation.getCurrentPosition(function(position){
+        if (position) {
+          resolve(new google.maps.LatLng(position.coords.latitude,position.coords.longitude));
+        } else {
+          reject();
+        }
+      });
+    })
+    return promise;
+  };
