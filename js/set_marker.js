@@ -47,15 +47,6 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
     });
   });
 
-  var fbSession = (function(fbData){
-      // userId = fbData.facebook.id,
-      var test = console.log("ya");
-    return {
-      // userId: userId,
-      test: test
-    };
-  });
-
   // var fbLogin = (function(){
   //   var userId;
   //   // var ref = new Firebase("https://halle.firebaseio.com");

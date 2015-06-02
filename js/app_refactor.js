@@ -15,6 +15,9 @@ var userData;
   });
 
   $(document).on("pagecreate", "#page-map", function(e, data){
+
+    console.log(gps.checkPosition());
+
     console.log("PAGA MAPA!");
     console.log(userData);
     console.log(fbData);
@@ -35,6 +38,28 @@ var userData;
     })
     return promise;
   };
+
+  var gps = (function(){
+    var currentPosition = function(position){
+      return "Sean";
+    }
+    var checkPosition = function(){
+      navigator.geolocation.getCurrentPosition(currentPosition)
+    }
+    return {
+      checkPosition: checkPosition
+    };
+  })();
+
+  var renderMap = function(){
+
+  };
+
+  var centerMap = function(){
+
+  };
+
+  //ajax calls
 
   var ajaxLogin = function(authData){
     userId = authData.facebook.id
