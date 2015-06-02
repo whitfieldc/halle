@@ -10,30 +10,81 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
   // } else {
   //   $('#login').show();
   // }
-  // var userId;
 
-  var fbLogin = (function(){
-    var userId;
-    // var ref = new Firebase("https://halle.firebaseio.com");
-    ref.authWithOAuthPopup("facebook", function(error, authData) { //return promise - set value of promise to outer ife
-      if (error) {
-        alert("login failed!");
-        console.log("Login Failed!", error);
-      } else {
-        userId = authData.facebook.id
-        console.log("test");
-        var data = {user:{oauth_id:userId}};
-      };
-      return {
-        userId
-      }
-      return
+  var fbAuth = function(){
+    var promise = new Promise(function(resolve, reject){
+
+      ref.authWithOAuthPopup("facebook", function(error, authData) { //return promise - set value of promise to outer ife
+        if (error) {
+          alert("login failed!");
+          reject(error);
+        } else {
+          // userId = authData.facebook.id
+          // var ajaxData = {user:{oauth_id:userId}};
+          resolve(authData);
+          // console.log(data);
+        };
+      });
     })
+    return promise;
+  };
+
+  fbAuth().then(function(authData){
+    console.log(authData);
+    userId = authData.facebook.id
+    var ajaxData = {user:{oauth_id:userId}};
+    $.ajax({
+      // url: 'http://calm-island-3256.herokuapp.com',
+      url: 'http://localhost:3000/users/'+userId+'/identify',
+      type: 'GET',
+      data: ajaxData
+    }).done(function(response) {
+      userData = response;
+      console.log(response);
+    }).fail(function() {
+      alert("YOU'RE A FAILURE")
+      console.log("FAILURE")
+    });
   });
+
+  var fbSession = (function(fbData){
+      // userId = fbData.facebook.id,
+      var test = console.log("ya");
+    return {
+      // userId: userId,
+      test: test
+    };
+  });
+
+  // var fbLogin = (function(){
+  //   var userId;
+  //   // var ref = new Firebase("https://halle.firebaseio.com");
+  //   ref.authWithOAuthPopup("facebook", function(error, authData) { //return promise - set value of promise to outer ife
+  //     if (error) {
+  //       alert("login failed!");
+  //       console.log("Login Failed!", error);
+  //     } else {
+  //       userId = authData.facebook.id
+  //       console.log("test");
+  //       var data = {user:{oauth_id:userId}};
+  //     };
+  //     return {
+  //       userId
+  //     }
+  //     return
+  //   })
+  // });
+  var userData;
 
   $('#login').on('tap', function(e) {
     e.preventDefault();
-    debugger
+    fbAuth();
+    console.log(userData)
+    // fbSession.test;
+    // debugger
+    // fbSession(authData)
+
+    // debugger
     // var ref = new Firebase("https://halle.firebaseio.com");
     // ref.authWithOAuthPopup("facebook", function(error, authData) {
     //   if (error) {
@@ -42,18 +93,18 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
     //   } else {
     //     userId = authData.facebook.id
     //     var data = {user:{oauth_id:userId}};
-        $.ajax({
-          // url: 'http://calm-island-3256.herokuapp.com',
-          url: 'http://localhost:3000/users/'+userId+'/identify',
-          type: 'GET',
-          data: data
-        }).done(function(response) {
-          console.log(response)
-        }).fail(function() {
-          alert("YOU'RE A FAILURE")
-          console.log("FAILURE")
-        });
-      // }
+        // $.ajax({
+        //   // url: 'http://calm-island-3256.herokuapp.com',
+        //   url: 'http://localhost:3000/users/'+userId+'/identify',
+        //   type: 'GET',
+        //   data: data
+        // }).done(function(response) {
+        //   console.log(response)
+        // }).fail(function() {
+        //   alert("YOU'RE A FAILURE")
+        //   console.log("FAILURE")
+        // });
+    //   }
     // });
   });
 
