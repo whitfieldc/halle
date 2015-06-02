@@ -54,8 +54,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
       e.preventDefault();
 
       $('#post-space').popup("open", {
+          y:1000,
           overlayTheme: "a",
-          positionTo: "window",
         })
 
       $('#add-space').on('tap', function(e) {
@@ -81,6 +81,7 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
           var marker = new google.maps.Marker({
                   position: new google.maps.LatLng(response.latitude,response.longitude),
                   map: map,
+                  draggable: true,
                   title:  response.note,
                   icon: markerSelect(response),
                   id: response.id,
@@ -88,6 +89,19 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
                   animation: google.maps.Animation.DROP,
                   zIndex: google.maps.Marker.MAX_ZINDEX + 1
           });
+          // WORK ON THIS LATERISH MAYBE
+          // google.maps.event.addListener(marker, 'dragend', function (event) {
+          //     lat = this.getPosition().lat();
+          //     lng = this.getPosition().lng();
+          //     $('#edit-space-location').popup('open', x = 300);
+          //     $('#edit-space').on('click', function(e){
+
+          //     });
+          // })
+
+          // $(marker).on('click', function() {
+          //   console.log(lat + " " + lng)
+          // };
         }).fail(function(response) {
           console.log(response);
           alert("shits fucked up");
