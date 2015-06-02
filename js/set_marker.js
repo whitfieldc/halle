@@ -3,13 +3,16 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
   var ref = new Firebase("https://halle.firebaseio.com");
 
 // Firebase Facebook login -----------------------------------------
+// Get login to be first page you see with choice between google and facebook
   $('#login').on('tap', function(e) {
     e.preventDefault();
     var ref = new Firebase("https://halle.firebaseio.com");
     ref.authWithOAuthPopup("facebook", function(error, authData) {
       if (error) {
+        alert("login failed!");
         console.log("Login Failed!", error);
       } else {
+        alert("login successful!", authData);
         console.log("Authenticated successfully with payload:", authData);
       }
     });
@@ -41,12 +44,35 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         icon: currentLoc
       });
 
-      //Center Map Button ------------------------
+//Center Map Button ------------------------
       var centerControlDiv = document.createElement('div');
       var centerControl = new CenterControl(centerControlDiv, initialLocation, map);
 
       centerControlDiv.index = 1;
       map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(centerControlDiv);
+
+//Directions ATTEMPT -------------------------------------------
+      var directionsDisplay;
+      var directionsService = new google.maps.DirectionsService();
+
+      directionsDisplay = new google.maps.DirectionsRenderer();
+      directionsDisplay.setMap(map);
+
+
+      var calcRoute = function(start, finish) {
+        var request = {
+            origin:start,
+            destination:finish,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        directionsService.route(request, function(response, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            // setAllMap(null);
+            directionsDisplay.setDirections(response);
+          }
+          else{alert("Server Error: Directions Unavailable")}
+        });
+      }
 
 // Add a space to the database -----------------------------------------
 // TO DO : Add ability to move marker before saving current location as open space -----------------------------------------
@@ -142,6 +168,7 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
     $('#claim').on('click', function(e){
       e.preventDefault();
       var headers = '{"Content-Type":"application/json"}';
+      var button = $(this)
       $.ajax({
         url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
         // url: 'http://localhost:3000/spaces/'+spaceId,
@@ -149,9 +176,15 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         headers: headers,
         data: '' //test without this
       }).done(function(response) {
-        console.log("spot claimed")
-        // add claim confirmation popup?
+        $('#space-options p').remove();
+        $('#space-options a').remove();
+        $('#space-options button').remove();
+        $('#space-options h4').text('Claimed √');
+        setTimeout(function () {
+          $('#space-options').popup('close');
+        }, 1500);
         // navigation begins
+        calcRoute(initialLocation, response.latitude +","+ response.longitude)
       }).fail(function(response) {
         alert("fuck you guys")
       })
@@ -193,7 +226,6 @@ var spaceStale = {
 var markerSelect = function(spaceObject){
   var creation = spaceObject.converted_time
   if ((Date.now() - creation) <= (5*60000)){
-    // console.log(Date.now() - creation)
     return spaceFresh;
   }
 
@@ -232,6 +264,5 @@ var CenterControl = function(controlDiv, centerLocation, map) {
   google.maps.event.addDomListener(controlUI, 'click', function() {
     map.setCenter(centerLocation)
   });
-
 }
 

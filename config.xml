@@ -22,6 +22,8 @@
       following tag to your config.xml; you will still have the INTERNET
       permission on your app, which PhoneGap requires.
     -->
+    
+    <gap:plugin name="org.apache.cordova.inappbrowser" />
     <access origin="*"/>
     <preference name="permissions" value="none"/>
 
