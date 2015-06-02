@@ -4,18 +4,99 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
 
 // Firebase Facebook login -----------------------------------------
 // Get login to be first page you see with choice between google and facebook
+
+  // if (authData > 0) {
+  //   $('#logout').show();
+  // } else {
+  //   $('#login').show();
+  // }
+
+  var fbAuth = function(){
+    var promise = new Promise(function(resolve, reject){
+
+      ref.authWithOAuthPopup("facebook", function(error, authData) { //return promise - set value of promise to outer ife
+        if (error) {
+          alert("login failed!");
+          reject(error);
+        } else {
+          // userId = authData.facebook.id
+          // var ajaxData = {user:{oauth_id:userId}};
+          resolve(authData);
+          // console.log(data);
+        };
+      });
+    })
+    return promise;
+  };
+
+  fbAuth().then(function(authData){
+    console.log(authData);
+    userId = authData.facebook.id
+    var ajaxData = {user:{oauth_id:userId}};
+    $.ajax({
+      // url: 'http://calm-island-3256.herokuapp.com',
+      url: 'http://localhost:3000/users/'+userId+'/identify',
+      type: 'GET',
+      data: ajaxData
+    }).done(function(response) {
+      userData = response;
+      console.log(response);
+    }).fail(function() {
+      alert("YOU'RE A FAILURE")
+      console.log("FAILURE")
+    });
+  });
+
+  // var fbLogin = (function(){
+  //   var userId;
+  //   // var ref = new Firebase("https://halle.firebaseio.com");
+  //   ref.authWithOAuthPopup("facebook", function(error, authData) { //return promise - set value of promise to outer ife
+  //     if (error) {
+  //       alert("login failed!");
+  //       console.log("Login Failed!", error);
+  //     } else {
+  //       userId = authData.facebook.id
+  //       console.log("test");
+  //       var data = {user:{oauth_id:userId}};
+  //     };
+  //     return {
+  //       userId
+  //     }
+  //     return
+  //   })
+  // });
+  var userData;
+
   $('#login').on('tap', function(e) {
     e.preventDefault();
-    var ref = new Firebase("https://halle.firebaseio.com");
-    ref.authWithOAuthPopup("facebook", function(error, authData) {
-      if (error) {
-        alert("login failed!");
-        console.log("Login Failed!", error);
-      } else {
-        alert("login successful!", authData);
-        console.log("Authenticated successfully with payload:", authData);
-      }
-    });
+    fbAuth();
+    console.log(userData)
+    // fbSession.test;
+    // debugger
+    // fbSession(authData)
+
+    // debugger
+    // var ref = new Firebase("https://halle.firebaseio.com");
+    // ref.authWithOAuthPopup("facebook", function(error, authData) {
+    //   if (error) {
+    //     alert("login failed!");
+    //     console.log("Login Failed!", error);
+    //   } else {
+    //     userId = authData.facebook.id
+    //     var data = {user:{oauth_id:userId}};
+        // $.ajax({
+        //   // url: 'http://calm-island-3256.herokuapp.com',
+        //   url: 'http://localhost:3000/users/'+userId+'/identify',
+        //   type: 'GET',
+        //   data: data
+        // }).done(function(response) {
+        //   console.log(response)
+        // }).fail(function() {
+        //   alert("YOU'RE A FAILURE")
+        //   console.log("FAILURE")
+        // });
+    //   }
+    // });
   });
 
 // Format map  -----------------------------------------
@@ -92,8 +173,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         var headers   = '{"Content-Type":"application/json"}';
 
         $.ajax({
-          url: 'http://calm-island-3256.herokuapp.com/spaces',
-          // url: 'http://localhost:3000/spaces',
+          // url: 'http://calm-island-3256.herokuapp.com/spaces',
+          url: 'http://localhost:3000/spaces',
           type: "POST",
           data: data,
           headers: headers
@@ -123,8 +204,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
 
 // Show available spaces from database -----------------------------------------
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com',
-      // url: 'http://localhost:3000',
+      // url: 'http://calm-island-3256.herokuapp.com',
+      url: 'http://localhost:3000',
       type: "GET",
     }).done(function(response){
       parkingSpots = response
@@ -178,12 +259,22 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
       var headers = '{"Content-Type":"application/json"}';
       var button = $(this)
       $.ajax({
-        url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-        // url: 'http://localhost:3000/spaces/'+spaceId,
+        // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+        url: 'http://localhost:3000/spaces/'+spaceId,
         type: 'PUT',
         headers: headers,
         data: '' //test without this
       }).done(function(response) {
+        // var data = {user:{consume}};
+        $.ajax({
+          url: 'http://localhost:3000/users/'+fbLogin.userId,
+          type: 'PUT',
+          data: data
+        }).done(function(response){
+          alert('FUCK YEAH BOI');
+        }).fail(function(response){
+          alert('FAIL AFILS FILA');
+        })
         $('#space-options p').remove();
         $('#space-options a').remove();
         $('#space-options button').remove();
