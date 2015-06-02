@@ -4,6 +4,13 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
 
 // Firebase Facebook login -----------------------------------------
 // Get login to be first page you see with choice between google and facebook
+
+  if (authData.facebook.id > 0) {
+    $('#logout').show();
+  } else {
+    $('#login').show();
+  }
+
   $('#login').on('tap', function(e) {
     e.preventDefault();
     var ref = new Firebase("https://halle.firebaseio.com");
@@ -12,12 +19,13 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         alert("login failed!");
         console.log("Login Failed!", error);
       } else {
-        var user_id = authData.facebook.id
+        var user_id   = authData.facebook.id
+        var data      = {user:{oauth_id:user_id}};
         $.ajax({
           // url: 'http://calm-island-3256.herokuapp.com',
           url: 'http://localhost:3000/users/'+user_id+'/identify',
           type: 'GET',
-          data: authData
+          data: data
         }).done(function(response) {
           console.log(response)
         }).fail(function() {
