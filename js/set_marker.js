@@ -5,11 +5,11 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
 // Firebase Facebook login -----------------------------------------
 // Get login to be first page you see with choice between google and facebook
 
-  if (authData.facebook.id > 0) {
-    $('#logout').show();
-  } else {
-    $('#login').show();
-  }
+  // if (authData.facebook.id > 0) {
+  //   $('#logout').show();
+  // } else {
+  //   $('#login').show();
+  // }
 
   $('#login').on('tap', function(e) {
     e.preventDefault();
