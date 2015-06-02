@@ -5,25 +5,46 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
 // Firebase Facebook login -----------------------------------------
 // Get login to be first page you see with choice between google and facebook
 
-  // if (authData.facebook.id > 0) {
+  // if (authData > 0) {
   //   $('#logout').show();
   // } else {
   //   $('#login').show();
   // }
+  // var userId;
 
-  $('#login').on('tap', function(e) {
-    e.preventDefault();
-    var ref = new Firebase("https://halle.firebaseio.com");
-    ref.authWithOAuthPopup("facebook", function(error, authData) {
+  var fbLogin = (function(){
+    var userId;
+    // var ref = new Firebase("https://halle.firebaseio.com");
+    ref.authWithOAuthPopup("facebook", function(error, authData) { //return promise - set value of promise to outer ife
       if (error) {
         alert("login failed!");
         console.log("Login Failed!", error);
       } else {
-        var user_id   = authData.facebook.id
-        var data      = {user:{oauth_id:user_id}};
+        userId = authData.facebook.id
+        console.log("test");
+        var data = {user:{oauth_id:userId}};
+      };
+      return {
+        userId
+      }
+      return
+    })
+  });
+
+  $('#login').on('tap', function(e) {
+    e.preventDefault();
+    debugger
+    // var ref = new Firebase("https://halle.firebaseio.com");
+    // ref.authWithOAuthPopup("facebook", function(error, authData) {
+    //   if (error) {
+    //     alert("login failed!");
+    //     console.log("Login Failed!", error);
+    //   } else {
+    //     userId = authData.facebook.id
+    //     var data = {user:{oauth_id:userId}};
         $.ajax({
           // url: 'http://calm-island-3256.herokuapp.com',
-          url: 'http://localhost:3000/users/'+user_id+'/identify',
+          url: 'http://localhost:3000/users/'+userId+'/identify',
           type: 'GET',
           data: data
         }).done(function(response) {
@@ -32,8 +53,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
           alert("YOU'RE A FAILURE")
           console.log("FAILURE")
         });
-      }
-    });
+      // }
+    // });
   });
 
 // Format map  -----------------------------------------
@@ -180,6 +201,16 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         headers: headers,
         data: '' //test without this
       }).done(function(response) {
+        // var data = {user:{consume}};
+        $.ajax({
+          url: 'http://localhost:3000/users/'+fbLogin.userId,
+          type: 'PUT',
+          data: data
+        }).done(function(response){
+          alert('FUCK YEAH BOI');
+        }).fail(function(response){
+          alert('FAIL AFILS FILA');
+        })
         $('#space-options p').remove();
         $('#space-options a').remove();
         $('#space-options button').remove();
