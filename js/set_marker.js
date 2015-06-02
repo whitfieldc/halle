@@ -12,8 +12,18 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         alert("login failed!");
         console.log("Login Failed!", error);
       } else {
-        alert("login successful!", authData);
-        console.log("Authenticated successfully with payload:", authData);
+        var user_id = authData.facebook.id
+        $.ajax({
+          // url: 'http://calm-island-3256.herokuapp.com',
+          url: 'http://localhost:3000/users/'+user_id+'/identify',
+          type: 'GET',
+          data: authData
+        }).done(function(response) {
+          console.log(response)
+        }).fail(function() {
+          alert("YOU'RE A FAILURE")
+          console.log("FAILURE")
+        });
       }
     });
   });
@@ -92,8 +102,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         var headers   = '{"Content-Type":"application/json"}';
 
         $.ajax({
-          url: 'http://calm-island-3256.herokuapp.com/spaces',
-          // url: 'http://localhost:3000/spaces',
+          // url: 'http://calm-island-3256.herokuapp.com/spaces',
+          url: 'http://localhost:3000/spaces',
           type: "POST",
           data: data,
           headers: headers
@@ -123,8 +133,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
 
 // Show available spaces from database -----------------------------------------
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com',
-      // url: 'http://localhost:3000',
+      // url: 'http://calm-island-3256.herokuapp.com',
+      url: 'http://localhost:3000',
       type: "GET",
     }).done(function(response){
       parkingSpots = response
@@ -156,8 +166,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
       var headers = '{"Content-Type":"application/json"}';
       var button = $(this)
       $.ajax({
-        url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-        // url: 'http://localhost:3000/spaces/'+spaceId,
+        // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+        url: 'http://localhost:3000/spaces/'+spaceId,
         type: 'PUT',
         headers: headers,
         data: '' //test without this
