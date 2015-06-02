@@ -92,8 +92,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
         var headers   = '{"Content-Type":"application/json"}';
 
         $.ajax({
-          url: 'http://calm-island-3256.herokuapp.com/spaces',
-          // url: 'http://localhost:3000/spaces',
+          // url: 'http://calm-island-3256.herokuapp.com/spaces',
+          url: 'http://localhost:3000/spaces',
           type: "POST",
           data: data,
           headers: headers
@@ -123,8 +123,8 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
 
 // Show available spaces from database -----------------------------------------
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com',
-      // url: 'http://localhost:3000',
+      // url: 'http://calm-island-3256.herokuapp.com',
+      url: 'http://localhost:3000',
       type: "GET",
     }).done(function(response){
       parkingSpots = response
@@ -150,14 +150,36 @@ $(document).on("pagecreate", "#pageMap", function(e, data){
       $('p').text(this.title);
     };
 
+// Live MARKER DROP
+
+    ref.on('child_added', function(childSnapshot, prevChildName){
+      console.log(childSnapshot)
+      var newChild = childSnapshot.val()
+      var newChildKey = Object.keys(newChild)[0]
+      var spaceObj = JSON.parse(newChild[newChildKey])
+      // debugger;
+
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
+        map: map,
+        animation: google.maps.Animation.DROP,
+        title:  spaceObj.note,
+        icon: markerSelect(spaceObj), //set marker according to age
+        id: spaceObj.id,
+        creation: spaceObj.converted_time
+      });
+      google.maps.event.addListener(marker, 'click', spaceDetails);
+      console.log("Hit FIREBASE")
+    });
+
 // Claim a parking spot  -----------------------------------------
     $('#claim').on('click', function(e){
       e.preventDefault();
       var headers = '{"Content-Type":"application/json"}';
       var button = $(this)
       $.ajax({
-        url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-        // url: 'http://localhost:3000/spaces/'+spaceId,
+        // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+        url: 'http://localhost:3000/spaces/'+spaceId,
         type: 'PUT',
         headers: headers,
         data: '' //test without this
