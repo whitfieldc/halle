@@ -13,6 +13,7 @@
     <script src="js/jquery.mobile.config.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script src="cordova.js"></script>
     <script src="js/firebase.min.js"></script>
     <script charset="utf-8" src="js/app_refactor.js"></script>
@@ -25,6 +26,7 @@
 
   <div id="page-map" data-role="page" data-url="map-page">
 
+
     <div data-role="popup" id="post-space">
       <h4 id="popup-par">ADD A PARKING SPACE</h4>
       <input id="note" type="text">
@@ -36,18 +38,33 @@
       <h4>Would you like to claim this parking space?</h4>
       <p>No notes given.</p>
       <button id="claim">Claim parking</button>
-    </div>
+    </div>    
 
     <header data-role="header">
+      <button id="profile">Profile</button>
       <h3>Halle</h3>
       <button id="create-space">List Opening</button>
     </header>
 
     <div id="content" data-role="content">
       <div id="map-canvas"></div>
+      <button id="carma-false">Please adjust your CARma</button>
       <button id="center">Center</button>
     </div>
 
+    <div id="user" data-role="panel" data-position="left" data-display="overlay">
+      <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+      <img/>
+      <h4></h4>
+      <h2></h2>
+      <button id="logout">Logout</button>
+      <button id="edit">Edit Profile</button>
+      <button id="invite">Invite Friends</button>
+    </div>
+
+    <div id="search-area">
+      <textarea id="pac-input" placeholder="Search Box"></textarea>
+    </div>
   </div>
 </body>
 </html>
