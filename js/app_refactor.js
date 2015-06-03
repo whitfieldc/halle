@@ -17,7 +17,7 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 
 $(document).on("pagecreate", "#page-map", function(e, data){
 
-  // debugger
+  debugger
 
   var mapOptions = {
     zoom: 13,
