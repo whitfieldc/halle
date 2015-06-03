@@ -39,6 +39,11 @@ var userData;
       });
     });
 
+    $('#claim').on('click', function(e){
+      e.preventDefault();
+      claimSpace(e);
+    })
+
     console.log("PAGA MAPA!");
     console.log(userData);
     console.log(fbData);
@@ -102,7 +107,6 @@ var userData;
   };
 
   var addSpace = function(e){
-
     getLocation().then(function(response){
       var note = $('#note').val()
       var latitude  = response.A;
@@ -141,6 +145,40 @@ var userData;
     });
   }
 
+  var claimSpace = function(e){
+    var spaceId = e.target.name
+    var headers = '{"Content-Type":"application/json"}';
+    $.ajax({
+      // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+      url: 'http://localhost:3000/spaces/'+spaceId,
+      type: 'PUT',
+      headers: headers,
+      data: '' //test without this
+    }).done(function(response) {
+      var data = {user:{consume: true}};
+      $.ajax({
+        url: 'http://localhost:3000/users/'+fbData.facebook.id,
+        type: 'PUT',
+        data: data
+      }).done(function(response){
+        alert('FUCK YEAH BOI');
+      }).fail(function(response){
+        alert('FAIL AFILS FILA');
+      })
+      $('#space-options p').remove();
+      $('#space-options a').remove();
+      $('#space-options button').remove();
+      $('#space-options h4').text('Claimed √');
+      setTimeout(function () {
+        $('#space-options').popup('close');
+      }, 1500);
+      // navigation begins
+      // calcRoute(initialLocation, response.latitude +","+ response.longitude)
+    }).fail(function(response) {
+      alert("fuck you guys")
+    });
+  };
+
 // Show Markers Request
 
   var loadSpaces = function(){
@@ -166,6 +204,7 @@ var userData;
 
   var spaceDetails = function() {
     spaceId = this.id
+    $('#claim').attr('name', spaceId)
     $('#space-options').popup("open", {
       overlayTheme: "a",
       positionTo: "window",
