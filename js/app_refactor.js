@@ -191,27 +191,26 @@ var addSpace = function(e){
       data: data,
       headers: headers
     }).done(function(response) {
+//---------------replace with a toast notification---------------
       $('#add-space').remove();
       $('#note').remove();
       $('#popup-par').text('Added √');
       setTimeout(function () {
         $('#post-space').popup('close');
       }, 1500);
-      // replace with a toast notification
-      console.log(response)
+//---------------replace with a toast notification---------------
       var data = {user:{post: true}};
       $.ajax({
-        url: 'http://localhost:3000/users/'+fbData.facebook.id,
         // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+        url: 'http://localhost:3000/users/'+fbData.facebook.id,
         type: 'PUT',
         data: data
       }).done(function(response){
         $('#cancel_post').show();
         userData.recentPost = response.id //needs to go in second .done after merge
-        console.log(response);
         consumeCheck(response.can_consume);
       }).fail(function(response){
-        console.log('fail posting')
+        console.log('failed to add space')
       });
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(response.latitude,response.longitude),
@@ -239,8 +238,8 @@ var deleteSpace = function(e){
     $('#cancel_post').hide();
     var data = {user:{claim: true}};
     $.ajax({
-      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
       url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     });
