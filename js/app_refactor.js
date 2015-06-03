@@ -23,7 +23,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-  
+
   markCenter(map);
   loadSpaces();
 
@@ -42,7 +42,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     });
   });
 
-  $('#claim').on('tap', function(e){
+  $('#claim').on('click', function(e){
     e.preventDefault();
     claimSpace(e);
   });
@@ -71,10 +71,11 @@ var fbAuth = function(){
 
 var ajaxLogin = function(authData){
   userId = authData.facebook.id
+  console.log(userId)
   var ajaxData = {user:{oauth_id:userId}};
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com',
-    url: 'http://localhost:3000/users/'+userId+'/identify',
+    url: 'http://calm-island-3256.herokuapp.com/users/'+userId+'/identify',
+    // url: 'http://localhost:3000/users/'+userId+'/identify',
     type: 'GET',
     data: ajaxData
   }).done(function(response) {
@@ -125,8 +126,8 @@ var addSpace = function(e){
     var headers   = '{"Content-Type":"application/json"}';
 
     $.ajax({
-      // url: 'http://calm-island-3256.herokuapp.com/spaces',
-      url: 'http://localhost:3000/spaces',
+      url: 'http://calm-island-3256.herokuapp.com/spaces',
+      // url: 'http://localhost:3000/spaces',
       type: "POST",
       data: data,
       headers: headers
@@ -160,15 +161,16 @@ var claimSpace = function(e){
   var spaceId = e.target.name
   var headers = '{"Content-Type":"application/json"}';
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-    url: 'http://localhost:3000/spaces/'+spaceId,
+    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    // url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
     headers: headers,
     data: '' //test without this
   }).done(function(response) {
     var data = {user:{consume: true}};
     $.ajax({
-      url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     }).done(function(response){
@@ -197,7 +199,7 @@ var calcRoute = function(finalDestination, map) {
   directionsDisplay.setMap(map);
 
   getLocation().then(function(currentLocation){
-    debugger
+    // debugger
     var request = {
       origin: currentLocation,
       destination: finalDestination,
@@ -215,8 +217,8 @@ var calcRoute = function(finalDestination, map) {
 
 var loadSpaces = function(){
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com',
-    url: 'http://localhost:3000',
+    url: 'http://calm-island-3256.herokuapp.com',
+    // url: 'http://localhost:3000',
     type: "GET",
   }).done(function(response){
     parkingSpots = response
@@ -229,7 +231,7 @@ var loadSpaces = function(){
         id: parkingSpots[i].id,
         creation: parkingSpots[i].converted_time
       });
-      google.maps.event.addListener(marker, 'tap', spaceDetails);
+      google.maps.event.addListener(marker, 'click', spaceDetails);
     };
   });
 }
@@ -249,13 +251,13 @@ var markerSelect = function(spaceObject){
   if ((Date.now() - creation) <= (5*60000)){
     return spaceFresh;
   } else {
-    console.log(Date.now() - creation)
+    // console.log(Date.now() - creation)
     return spaceStale;
   };
 };
 
 var liveDrop = function(childSnapshot, prevChildName){
-  console.log(childSnapshot);
+  // console.log(childSnapshot);
   var newChild = childSnapshot.val();
   var newChildKey = Object.keys(newChild)[0];
   var spaceObj = JSON.parse(newChild[newChildKey]);
@@ -295,7 +297,7 @@ var spaceFresh = {
   strokeWeight: 0.2,
   strokeColor: 'black',
   strokeOpacity: 1,
-  fillColor: '#D22260',
+  fillColor: '#ED273E',
   fillOpacity: 1
 };
 var spaceStale = {
@@ -304,6 +306,6 @@ var spaceStale = {
   strokeWeight: 0.2,
   strokeColor: 'black',
   strokeOpacity: 1,
-  fillColor: '#AD1457',
+  fillColor: '#A282F9',
   fillOpacity: 1
 };
