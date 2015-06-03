@@ -17,8 +17,6 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 
 $(document).on("pagecreate", "#page-map", function(e, data){
 
-  debugger
-
   var mapOptions = {
     zoom: 13,
     disableDefaultUI: true,
@@ -26,6 +24,11 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+
+  ref.on('child_added', function(childSnapshot, prevChildName){
+    liveDrop(childSnapshot, prevChildName);
+  });
 
   markCenter(map);
   consumeCheck(userData.can_consume);
@@ -59,6 +62,22 @@ $(document).on("pagecreate", "#page-map", function(e, data){
       positionTo: "window",
     });
   });
+
+//______________________________________
+
+// Create the search box and link it to the UI element.
+  var input = (document.getElementById('pac-input'));
+  var searchBox = new google.maps.places.SearchBox((input));
+
+  map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
+
+  // Listen for the event fired when the user selects an item from the
+  // pick list. Retrieve the matching places for that item.
+  google.maps.event.addListener(searchBox, 'places_changed', function(){
+    localSearch(searchBox)
+  });
+
+//______________________________________
 
   $(window).on('swiperight', function(e){
     e.preventDefault();
@@ -317,6 +336,25 @@ var liveDrop = function(childSnapshot, prevChildName){
   console.log("Hit firebase");
 }
 
+//Search
+var localSearch = function(searchObject){
+  var places = searchObject.getPlaces();
+    if (typeof searchMarker !== 'undefined') {
+      searchMarker.setMap(null)
+    };
+
+  for (var i = 0, place; place = places[i]; i++) {
+    searchMarker = new google.maps.Marker({
+      position: place.geometry.location,
+      map: map,
+      icon: searchLocation
+      // animation: google.maps.Animation.DROP
+    });
+    map.setZoom(16);
+    map.panTo(place.geometry.location);
+  }
+}
+
 var consumeCheck = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
@@ -364,3 +402,14 @@ var spaceStale = {
   fillColor: '#A282F9',
   fillOpacity: 1
 };
+
+var searchLocation = {
+  path: fontawesome.markers.UNIVERSITY,
+  scale: 0.25,
+  strokeWeight: 0.2,
+  strokeColor: 'black',
+  strokeOpacity: 1,
+  fillColor: 'black',
+  fillOpacity: 1
+
+}
