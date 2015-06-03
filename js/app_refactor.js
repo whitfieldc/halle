@@ -33,7 +33,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   //   liveDrop(childSnapshot, prevChildName);
   // });
 
-  consume(userData.can_consume);
+  consumeCheck(userData.can_consume);
 
   $('#create-space').on('click', function(e){
     e.preventDefault();
@@ -152,7 +152,7 @@ var addSpace = function(e){
         data: data
       }).done(function(response){
         console.log(response);
-        consume(response.can_consume);
+        consumeCheck(response.can_consume);
       }).fail(function(response){
         console.log('fail posting')
       });
@@ -290,7 +290,7 @@ var liveDrop = function(childSnapshot, prevChildName){
   console.log("Hit FIREBASE");
 }
 
-var consume = function(can_consume){
+var consumeCheck = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
       loadSpaces();
