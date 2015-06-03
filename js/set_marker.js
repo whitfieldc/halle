@@ -133,27 +133,30 @@
       // map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(centerControlDiv);
 
 //Directions ATTEMPT -------------------------------------------
-      var directionsDisplay;
-      var directionsService = new google.maps.DirectionsService();
+// var directionsDisplay;
+// var directionsService = new google.maps.DirectionsService();
 
-      directionsDisplay = new google.maps.DirectionsRenderer();
-      directionsDisplay.setMap(map);
+// directionsDisplay = new google.maps.DirectionsRenderer();
+// directionsDisplay.setMap(map);
 
 
-      var calcRoute = function(start, finish) {
-        var request = {
-            origin:start,
-            destination:finish,
-            travelMode: google.maps.TravelMode.DRIVING
-        };
-        directionsService.route(request, function(response, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            // setAllMap(null);
-            directionsDisplay.setDirections(response);
-          }
-          else{alert("Server Error: Directions Unavailable")}
-        });
-      }
+// var calcRoute = function(finalDestination) {
+//   getLocation().then(function(currentLocation){
+//     var request = {
+//       origin: currentLocation,
+//       destination: finalDestination,
+//       travelMode: google.maps.TravelMode.DRIVING
+//     };
+
+//     directionsService.route(request, function(response, status) {
+//       if (status == google.maps.DirectionsStatus.OK) {
+//         // setAllMap(null);
+//         directionsDisplay.setDirections(response);
+//       }
+//       else{alert("Server Error: Directions Unavailable")}
+//     });
+//   });
+// };
 
 // Add a space to the database -----------------------------------------
 // TO DO : Add ability to move marker before saving current location as open space -----------------------------------------

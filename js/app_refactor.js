@@ -23,7 +23,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
+  
   markCenter(map);
   loadSpaces();
 
@@ -107,7 +107,7 @@ var markCenter = function(map){
     var marker = new google.maps.Marker({
       position: response,
       map: map,
-      icon: currentLoc
+      icon: currentLocation
     });
   })
 };
@@ -176,16 +176,38 @@ var claimSpace = function(e){
         $('#space-options').popup('close');
       }, 1500);
       // replace with a toast notification
-      calcRoute(initialLocation, response.latitude +","+ response.longitude)
     }).fail(function(response){
       console.log('claim space user update failed');
-    })
+    });
+    var destination = response.latitude +","+ response.longitude
+    calcRoute(destination, map);
   }).fail(function(response) {
-    console.log("claim space ajax call failed")
+    console.log("claim space ajax call failed");
   });
 };
 
-// Show Markers Request
+var calcRoute = function(finalDestination, map) {
+  var directionsDisplay;
+  var directionsService = new google.maps.DirectionsService();
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  directionsDisplay.setMap(map);
+
+  getLocation().then(function(currentLocation){
+    debugger
+    var request = {
+      origin: currentLocation,
+      destination: finalDestination,
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+
+    directionsService.route(request, function(response, status) {
+      if (status == google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+      }
+      else{alert("Server Error: Directions Unavailable")}
+    });
+  });
+};
 
 var loadSpaces = function(){
   $.ajax({
@@ -235,7 +257,7 @@ var markerSelect = function(spaceObject){
 // });
 
 // Space markers CSS -----------------------------------------
-var currentLoc = {
+var currentLocation = {
   path: fontawesome.markers.EXCLAMATION,
   scale: 0.65,
   strokeWeight: 0.2,
