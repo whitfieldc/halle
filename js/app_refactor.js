@@ -53,13 +53,13 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     centerMap(map);
   });
 
-  // $('#profile').on('click', function(e){
-  //   e.preventDefault();
-  //   $('#user').panel("open")//, {
-  //   //   overlayTheme: "a",
-  //   //   positionTo: "window",
-  //   // });
-  // });
+  $('#profile').on('click', function(e){
+    e.preventDefault();
+    $('#user').panel("open", {
+      overlayTheme: "a",
+      positionTo: "window",
+    });
+  });
 });
 
 //function definitions only ++++++++++++++++++++++++++++++++++++++++++++++++++++++
