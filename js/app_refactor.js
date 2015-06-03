@@ -16,7 +16,8 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 });
 
 $(document).on("pagecreate", "#page-map", function(e, data){
-
+  var directionsDisplay;
+  markerArray = []
   var mapOptions = {
     zoom: 13,
     disableDefaultUI: true,
@@ -24,11 +25,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-
-  ref.on('child_added', function(childSnapshot, prevChildName){
-    liveDrop(childSnapshot, prevChildName);
-  });
 
   markCenter(map);
   consumeCheck(userData.can_consume);
@@ -70,7 +66,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#cancel_claim').on('click', function(e){
     e.preventDefault();
-    deleteClaim();
+    cancelClaim();
     // clear overlay?
     centerMap(map);
   });
@@ -134,8 +130,8 @@ var ajaxLogin = function(authData){
   userId = authData.facebook.id;
   var ajaxData = {user:{oauth_id:userId}};
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com/users/'+userId+'/identify',
-    url: 'http://localhost:3000/users/'+userId+'/identify',
+    url: 'http://calm-island-3256.herokuapp.com/users/'+userId+'/identify',
+    // url: 'http://localhost:3000/users/'+userId+'/identify',
     type: 'GET',
     data: ajaxData
   }).done(function(response) {
@@ -162,6 +158,7 @@ var getLocation = function() {
 var centerMap = function(map){
   getLocation().then(function(response){
     map.setCenter(response);
+    map.setZoom(15);
   });
 };
 
@@ -185,8 +182,8 @@ var addSpace = function(e){
     var headers   = '{"Content-Type":"application/json"}';
 
     $.ajax({
-      // url: 'http://calm-island-3256.herokuapp.com/spaces',
-      url: 'http://localhost:3000/spaces',
+      url: 'http://calm-island-3256.herokuapp.com/spaces',
+      // url: 'http://localhost:3000/spaces',
       type: "POST",
       data: data,
       headers: headers
@@ -213,16 +210,17 @@ var addSpace = function(e){
       }).fail(function(response){
         console.log('fail posting')
       });
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(response.latitude,response.longitude),
-        map: map,
-        title:  response.note,
-        icon: markerSelect(response),
-        id: response.id,
-        creation: response.converted_time,
-        animation: google.maps.Animation.DROP,
-        zIndex: google.maps.Marker.MAX_ZINDEX + 1
-      });
+      // var marker = new google.maps.Marker({
+      //   position: new google.maps.LatLng(response.latitude,response.longitude),
+      //   map: map,
+      //   title:  response.note,
+      //   icon: markerSelect(response),
+      //   id: response.id,
+      //   creation: response.converted_time,
+      //   animation: google.maps.Animation.DROP,
+      //   zIndex: google.maps.Marker.MAX_ZINDEX + 1
+      // });
+      console.log("Console Log")
     }).fail(function(response) {
       alert("Could not create space");
     });
@@ -232,15 +230,15 @@ var addSpace = function(e){
 var deleteSpace = function(e){
   var spaceId = userData.recentPost;
   $.ajax({
-    url: 'http://localhost:3000/spaces/'+spaceId,
-    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    // url: 'http://localhost:3000/spaces/'+spaceId,
+    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
     type: 'DELETE'
   }).done(function(){
     $('#cancel_post').hide();
     var data = {user:{claim: true}};
     $.ajax({
-      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-      url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     });
@@ -254,15 +252,15 @@ var claimSpace = function(e){
   var spaceId = e.target.name
   var headers = '{"Content-Type":"application/json"}';
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-    url: 'http://localhost:3000/spaces/'+spaceId,
+    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    // url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
     headers: headers
   }).done(function(response) {
     var data = {user:{consume: true}};
     $.ajax({
-      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-      url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     }).done(function(response){
@@ -279,30 +277,33 @@ var claimSpace = function(e){
     }).fail(function(response){
       console.log('claim space user update failed');
     });
-    var destination = response.latitude +","+ response.longitude
+    var destination = response.latitude +","+ response.longitude;
+    clearMarkers();
     calcRoute(destination, map);
   }).fail(function(response) {
     console.log("claim space ajax call failed");
   });
 };
 
-var deleteClaim = function(e){
+var cancelClaim = function(e){
   var spaceId = userData.recentClaim;
   var headers = '{"Content-Type":"application/json"}';
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-    url: 'http://localhost:3000/spaces/'+spaceId,
+    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    // url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
     headers: headers
   }).done(function(response) {
     var data = {user:{post: true}};
     $.ajax({
-      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-      url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     }).done(function(){
       $('#cancel_claim').hide();
+      directionsDisplay.setMap(null)
+      loadSpaces();
     }).fail(function(){
       alert('could not remove claim');
       console.log('could remove claim');
@@ -311,9 +312,8 @@ var deleteClaim = function(e){
 };
 
 var calcRoute = function(finalDestination, map) {
-  var directionsDisplay;
   var directionsService = new google.maps.DirectionsService();
-  directionsDisplay = new google.maps.DirectionsRenderer();
+  directionsDisplay = new google.maps.DirectionsRenderer({});
   directionsDisplay.setMap(map);
 
   getLocation().then(function(currentLocation){
@@ -334,8 +334,8 @@ var calcRoute = function(finalDestination, map) {
 
 var loadSpaces = function(){
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com',
-    url: 'http://localhost:3000',
+    url: 'http://calm-island-3256.herokuapp.com',
+    // url: 'http://localhost:3000',
     type: "GET",
   }).done(function(response){
     parkingSpots = response
@@ -348,6 +348,7 @@ var loadSpaces = function(){
         id: parkingSpots[i].id,
         creation: parkingSpots[i].converted_time
       });
+      markerArray.push(marker)
       google.maps.event.addListener(marker, 'click', spaceDetails);
     };
   });
@@ -391,8 +392,10 @@ var liveDrop = function(childSnapshot, prevChildName){
     id: spaceObj.id,
     creation: spaceObj.converted_time
   });
+  markerArray.push(marker)
   google.maps.event.addListener(marker, 'click', spaceDetails);
   console.log("Hit firebase");
+  console.log(prevChildName)
 }
 
 //Search
@@ -409,6 +412,7 @@ var localSearch = function(searchObject){
       icon: searchLocation
       // animation: google.maps.Animation.DROP
     });
+    markerArray.push(searchMarker)
     map.setZoom(16);
     map.panTo(place.geometry.location);
   }
@@ -426,6 +430,13 @@ var consumeCheck = function(can_consume){
     console.log("shits false")
   };
 };
+
+var clearMarkers = function() {
+  for (var i = 0; i < markerArray.length; i++ ) {
+    markerArray[i].setMap(null);
+  }
+  markerArray.length = 0;
+}
 
 // Map format???
   // $(".ui-content", this).css({
@@ -466,6 +477,16 @@ var searchLocation = {
   scale: 0.25,
   strokeWeight: 0.2,
   strokeColor: 'black',
+  strokeOpacity: 1,
+  fillColor: 'black',
+  fillOpacity: 1
+}
+
+var openSpace = {
+  path: fontawesome.markers.ARROW_DOWN,
+  scale: 0.5,
+  strokeWeight: 0.2,
+  strokeColor: 'blue',
   strokeOpacity: 1,
   fillColor: 'black',
   fillOpacity: 1
