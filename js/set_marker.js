@@ -234,6 +234,28 @@
     //   $('p').text(this.title);
     // };
 
+// Live MARKER DROP
+
+    ref.on('child_added', function(childSnapshot, prevChildName){
+      console.log(childSnapshot)
+      var newChild = childSnapshot.val()
+      var newChildKey = Object.keys(newChild)[0]
+      var spaceObj = JSON.parse(newChild[newChildKey])
+      // debugger;
+
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
+        map: map,
+        animation: google.maps.Animation.DROP,
+        title:  spaceObj.note,
+        icon: markerSelect(spaceObj), //set marker according to age
+        id: spaceObj.id,
+        creation: spaceObj.converted_time
+      });
+      google.maps.event.addListener(marker, 'click', spaceDetails);
+      console.log("Hit FIREBASE")
+    });
+
 // Claim a parking spot  -----------------------------------------
 //     $('#claim').on('click', function(e){
 //       e.preventDefault();
