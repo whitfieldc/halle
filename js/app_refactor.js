@@ -27,64 +27,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   markCenter(map);
   loadSpaces();
 
-//______________________________________
-var markers = [ ]
-
-  // var defaultBounds = new google.maps.LatLngBounds(
-  //     new google.maps.LatLng(-33.8902, 151.1759),
-  //     new google.maps.LatLng(-33.8474, 151.2631));
-  // map.fitBounds(defaultBounds);
-
-// Create the search box and link it to the UI element.
-  var input = (document.getElementById('pac-input'));
-  map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
-
-  var searchBox = new google.maps.places.SearchBox(input);
-
-  // Listen for the event fired when the user selects an item from the
-  // pick list. Retrieve the matching places for that item.
-  google.maps.event.addListener(searchBox, 'places_changed', function() {
-        var places = searchBox.getPlaces();
-
-    if (places.length == 0) {
-      return;
-    }
-    for (var i = 0, marker; marker = markers[i]; i++) {
-      marker.setMap(null);
-    }
-
-    // For each place, get the icon, place name, and location.
-    markers = [];
-    var bounds = new google.maps.LatLngBounds();
-    for (var i = 0, place; place = places[i]; i++) {
-      var image = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
-      };
-
-      // Create a marker for each place.
-      // var marker = new google.maps.Marker({
-      //   map: map,
-      //   icon: image,
-      //   title: place.name,
-      //   position: place.geometry.location
-      // });
-
-      map.setCenter(place.geometry.location);
-      bounds.extend(place.geometry.location);
-    }
-  });
-
-    // Bias the SearchBox results towards places that are within the bounds of the
-  // current map's viewport.
-  // google.maps.event.addListener(map, 'bounds_changed', function() {
-  //   var bounds = map.getBounds();
-  //   searchBox.setBounds(bounds);
-  // });
-//______________________________________
 
   ref.on('child_added', function(childSnapshot, prevChildName){
     liveDrop(childSnapshot, prevChildName);
@@ -118,6 +60,22 @@ var markers = [ ]
       positionTo: "window",
     });
   });
+//______________________________________
+
+// Create the search box and link it to the UI element.
+  var input = (document.getElementById('pac-input'));
+  var searchBox = new google.maps.places.SearchBox((input));
+
+  map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
+
+  // Listen for the event fired when the user selects an item from the
+  // pick list. Retrieve the matching places for that item.
+  google.maps.event.addListener(searchBox, 'places_changed', function(){
+    localSearch(searchBox)
+  });
+
+//______________________________________
+
 });
 
 //function definitions only ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -344,6 +302,25 @@ var liveDrop = function(childSnapshot, prevChildName){
   console.log("Hit firebase");
 }
 
+//Search
+var localSearch = function(searchObject){
+  var places = searchObject.getPlaces();
+    if (typeof searchMarker !== 'undefined') {
+      searchMarker.setMap(null)
+    };
+
+  for (var i = 0, place; place = places[i]; i++) {
+    searchMarker = new google.maps.Marker({
+      position: place.geometry.location,
+      map: map,
+      icon: searchLocation
+      // animation: google.maps.Animation.DROP
+    });
+    map.setZoom(16);
+    map.panTo(place.geometry.location);
+  }
+};
+
 // Map format???
   // $(".ui-content", this).css({
    // height: $(window).height(),
@@ -378,3 +355,14 @@ var spaceStale = {
   fillColor: '#A282F9',
   fillOpacity: 1
 };
+
+var searchLocation = {
+  path: fontawesome.markers.UNIVERSITY,
+  scale: 0.25,
+  strokeWeight: 0.2,
+  strokeColor: 'black',
+  strokeOpacity: 1,
+  fillColor: 'black',
+  fillOpacity: 1
+
+}
