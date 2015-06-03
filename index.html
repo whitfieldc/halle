@@ -39,6 +39,7 @@
     </div>
 
     <header data-role="header">
+      <a href="#user"><button id="profile">Profile</button></a>
       <h3>Halle</h3>
       <button id="create-space">List Opening</button>
     </header>
@@ -46,6 +47,16 @@
     <div id="content" data-role="content">
       <div id="map-canvas"></div>
       <button id="center">Center</button>
+    </div>
+
+    <div id="user" data-role="panel" data-position="left" data-display="overlay">
+      <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+      <img/>
+      <h4></h4>
+      <h2></h2>
+      <button id="logout">Logout</button>
+      <button id="edit">Edit Profile</button>
+      <button id="invite">Invite Friends</button>
     </div>
 
   </div>

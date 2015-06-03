@@ -4,12 +4,13 @@ var userData;
 
 $(document).on("pagecreate", "#landing-screen", function(e, data){
 
-  $('#login').on('tap', function(e){
+  $('#login').on('click', function(e){
     e.preventDefault();
 
     fbAuth().then(function(authData){
       fbData = authData;
       ajaxLogin(authData);
+      setProfile(authData);
     });
   });
 });
@@ -31,26 +32,34 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     liveDrop(childSnapshot, prevChildName);
   });
 
-  $('#create-space').on('tap', function(e){
+  $('#create-space').on('click', function(e){
     e.preventDefault();
     $('#post-space').popup("open", {
       overlayTheme: "a",
       positionTo: "window",
     });
-    $('#add-space').on('tap', function(e){
+    $('#add-space').on('click', function(e){
       addSpace(e);
     });
   });
 
-  $('#claim').on('tap', function(e){
+  $('#claim').on('click', function(e){
     e.preventDefault();
     claimSpace(e);
   });
 
-  $('#center').on('tap', function(e){
+  $('#center').on('click', function(e){
     e.preventDefault();
     centerMap(map);
   });
+
+  // $('#profile').on('click', function(e){
+  //   e.preventDefault();
+  //   $('#user').panel("open")//, {
+  //   //   overlayTheme: "a",
+  //   //   positionTo: "window",
+  //   // });
+  // });
 });
 
 //function definitions only ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -69,22 +78,30 @@ var fbAuth = function(){
   return promise;
 };
 
+var setProfile = function(authData){
+  var userId = authData.facebook.id;
+  var name = authData.facebook.cachedUserProfile.name;
+  var photo = authData.facebook.cachedUserProfile.picture.data.url;
+  $('#user h4').text(name);
+  $('#user h2').text('Carma:');
+  $('#user img').attr('src', photo);
+};
+
 var ajaxLogin = function(authData){
-  userId = authData.facebook.id
+  userId = authData.facebook.id;
   var ajaxData = {user:{oauth_id:userId}};
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com',
-    url: 'http://localhost:3000/users/'+userId+'/identify',
+    url: 'http://calm-island-3256.herokuapp.com/users/'+userId+'/identify',
+    // url: 'http://localhost:3000/users/'+userId+'/identify',
     type: 'GET',
     data: ajaxData
   }).done(function(response) {
     userData = response;
     window.location.href = '#page-map';
   }).fail(function() {
-    alert("YOU'RE A FAILURE")
-    console.log("FAILURE")
+    alert("YOU'RE A FAILURE");
   });
-}
+};
 
 var getLocation = function() {
   var promise = new Promise(function(resolve, reject){
@@ -93,9 +110,9 @@ var getLocation = function() {
         resolve(new google.maps.LatLng(position.coords.latitude,position.coords.longitude));
       } else {
         reject();
-      }
+      };
     });
-  })
+  });
   return promise;
 };
 
@@ -113,20 +130,20 @@ var markCenter = function(map){
       map: map,
       icon: currentLocation
     });
-  })
+  });
 };
 
 var addSpace = function(e){
   getLocation().then(function(response){
-    var note = $('#note').val()
+    var note = $('#note').val();
     var latitude  = response.A;
     var longitude = response.F;
     var data      = {space:{latitude:+latitude, longitude:+longitude, note:note}};
     var headers   = '{"Content-Type":"application/json"}';
 
     $.ajax({
-      // url: 'http://calm-island-3256.herokuapp.com/spaces',
-      url: 'http://localhost:3000/spaces',
+      url: 'http://calm-island-3256.herokuapp.com/spaces',
+      // url: 'http://localhost:3000/spaces',
       type: "POST",
       data: data,
       headers: headers
@@ -138,7 +155,6 @@ var addSpace = function(e){
         $('#post-space').popup('close');
       }, 1500);
         // replace with a toast notification
-      console.log(response)
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(response.latitude,response.longitude),
         map: map,
@@ -150,7 +166,6 @@ var addSpace = function(e){
         zIndex: google.maps.Marker.MAX_ZINDEX + 1
       });
     }).fail(function(response) {
-      console.log(response);
       alert("shits fucked up");
     });
   });
@@ -160,15 +175,16 @@ var claimSpace = function(e){
   var spaceId = e.target.name
   var headers = '{"Content-Type":"application/json"}';
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-    url: 'http://localhost:3000/spaces/'+spaceId,
+    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    // url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
     headers: headers,
     data: '' //test without this
   }).done(function(response) {
     var data = {user:{consume: true}};
     $.ajax({
-      url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     }).done(function(response){
@@ -215,8 +231,8 @@ var calcRoute = function(finalDestination, map) {
 
 var loadSpaces = function(){
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com',
-    url: 'http://localhost:3000',
+    url: 'http://calm-island-3256.herokuapp.com',
+    // url: 'http://localhost:3000',
     type: "GET",
   }).done(function(response){
     parkingSpots = response
@@ -229,7 +245,7 @@ var loadSpaces = function(){
         id: parkingSpots[i].id,
         creation: parkingSpots[i].converted_time
       });
-      google.maps.event.addListener(marker, 'tap', spaceDetails);
+      google.maps.event.addListener(marker, 'click', spaceDetails);
     };
   });
 }
@@ -249,13 +265,11 @@ var markerSelect = function(spaceObject){
   if ((Date.now() - creation) <= (5*60000)){
     return spaceFresh;
   } else {
-    console.log(Date.now() - creation)
     return spaceStale;
   };
 };
 
 var liveDrop = function(childSnapshot, prevChildName){
-  console.log(childSnapshot);
   var newChild = childSnapshot.val();
   var newChildKey = Object.keys(newChild)[0];
   var spaceObj = JSON.parse(newChild[newChildKey]);
@@ -270,7 +284,7 @@ var liveDrop = function(childSnapshot, prevChildName){
     creation: spaceObj.converted_time
   });
   google.maps.event.addListener(marker, 'click', spaceDetails);
-  console.log("Hit FIREBASE");
+  console.log("Hit firebase");
 }
 
 // Map format???
@@ -295,7 +309,7 @@ var spaceFresh = {
   strokeWeight: 0.2,
   strokeColor: 'black',
   strokeOpacity: 1,
-  fillColor: '#D22260',
+  fillColor: '#ED273E',
   fillOpacity: 1
 };
 var spaceStale = {
@@ -304,6 +318,6 @@ var spaceStale = {
   strokeWeight: 0.2,
   strokeColor: 'black',
   strokeOpacity: 1,
-  fillColor: '#AD1457',
+  fillColor: '#A282F9',
   fillOpacity: 1
 };
