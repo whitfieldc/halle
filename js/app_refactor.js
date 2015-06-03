@@ -4,7 +4,7 @@ var userData;
 
 $(document).on("pagecreate", "#landing-screen", function(e, data){
 
-  $('#login').on('click', function(e){
+  $('#login').on('tap', function(e){
     e.preventDefault();
 
     fbAuth().then(function(authData){
@@ -27,6 +27,10 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   markCenter(map);
   loadSpaces();
 
+  ref.on('child_added', function(childSnapshot, prevChildName){
+    liveDrop(childSnapshot, prevChildName);
+  });
+
   $('#create-space').on('tap', function(e){
     e.preventDefault();
     $('#post-space').popup("open", {
@@ -38,7 +42,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     });
   });
 
-  $('#claim').on('click', function(e){
+  $('#claim').on('tap', function(e){
     e.preventDefault();
     claimSpace(e);
   });
@@ -225,7 +229,7 @@ var loadSpaces = function(){
         id: parkingSpots[i].id,
         creation: parkingSpots[i].converted_time
       });
-      google.maps.event.addListener(marker, 'click', spaceDetails);
+      google.maps.event.addListener(marker, 'tap', spaceDetails);
     };
   });
 }
@@ -250,6 +254,25 @@ var markerSelect = function(spaceObject){
   };
 };
 
+var liveDrop = function(childSnapshot, prevChildName){
+  console.log(childSnapshot);
+  var newChild = childSnapshot.val();
+  var newChildKey = Object.keys(newChild)[0];
+  var spaceObj = JSON.parse(newChild[newChildKey]);
+
+  var marker = new google.maps.Marker({
+    position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
+    map: map,
+    animation: google.maps.Animation.DROP,
+    title:  spaceObj.note,
+    icon: markerSelect(spaceObj), //set marker according to age
+    id: spaceObj.id,
+    creation: spaceObj.converted_time
+  });
+  google.maps.event.addListener(marker, 'click', spaceDetails);
+  console.log("Hit FIREBASE");
+}
+
 // Map format???
   // $(".ui-content", this).css({
    // height: $(window).height(),
@@ -258,8 +281,8 @@ var markerSelect = function(spaceObject){
 
 // Space markers CSS -----------------------------------------
 var currentLocation = {
-  path: fontawesome.markers.EXCLAMATION,
-  scale: 0.65,
+  path: fontawesome.markers.LOCATION_ARROW,
+  scale: 0.55,
   strokeWeight: 0.2,
   strokeColor: 'black',
   strokeOpacity: 1,
@@ -267,17 +290,17 @@ var currentLocation = {
   fillOpacity: 1
 };
 var spaceFresh = {
-  path: fontawesome.markers.EXCLAMATION,
-  scale: 0.5,
+  path: fontawesome.markers.MAP_MARKER,
+  scale: 0.55,
   strokeWeight: 0.2,
   strokeColor: 'black',
   strokeOpacity: 1,
-  fillColor: '#76FF03',
+  fillColor: '#D22260',
   fillOpacity: 1
 };
 var spaceStale = {
-  path: fontawesome.markers.EXCLAMATION,
-  scale: 0.5,
+  path: fontawesome.markers.MAP_MARKER,
+  scale: 0.55,
   strokeWeight: 0.2,
   strokeColor: 'black',
   strokeOpacity: 1,
