@@ -19,3 +19,11 @@
 a {
   text-decoration: none;
 }
+
+#pac-input{
+  height: 6px;
+  width: 100%;
+  position: absolute;
+  bottom: 25%;
+  z-index: 2;
+}
