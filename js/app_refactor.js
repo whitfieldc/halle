@@ -17,6 +17,8 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 
 $(document).on("pagecreate", "#page-map", function(e, data){
 
+  debugger
+
   var mapOptions = {
     zoom: 13,
     disableDefaultUI: true,
@@ -26,11 +28,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
   markCenter(map);
-  loadSpaces();
-
-  ref.on('child_added', function(childSnapshot, prevChildName){
-    liveDrop(childSnapshot, prevChildName);
-  });
+  consumeCheck(userData.can_consume);
 
   $('#create-space').on('click', function(e){
     e.preventDefault();
@@ -44,6 +42,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   });
 
   $('#claim').on('click', function(e){
+    console.log("claim is working")
     e.preventDefault();
     claimSpace(e);
   });
@@ -174,6 +173,19 @@ var addSpace = function(e){
         $('#post-space').popup('close');
       }, 1500);
         // replace with a toast notification
+      console.log(response)
+      var data = {user:{post: true}};
+      $.ajax({
+        url: 'http://localhost:3000/users/'+fbData.facebook.id,
+        // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+        type: 'PUT',
+        data: data
+      }).done(function(response){
+        console.log(response);
+        consumeCheck(response.can_consume);
+      }).fail(function(response){
+        console.log('fail posting')
+      });
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(response.latitude,response.longitude),
         map: map,
@@ -304,6 +316,19 @@ var liveDrop = function(childSnapshot, prevChildName){
   google.maps.event.addListener(marker, 'click', spaceDetails);
   console.log("Hit firebase");
 }
+
+var consumeCheck = function(can_consume){
+  if (can_consume === true){
+    $('#carma-false').hide();
+      loadSpaces();
+      ref.on('child_added', function(childSnapshot, prevChildName){
+        liveDrop(childSnapshot, prevChildName);
+    });
+    console.log('shits true')
+  } else {
+    console.log("shits false")
+  };
+};
 
 // Map format???
   // $(".ui-content", this).css({
