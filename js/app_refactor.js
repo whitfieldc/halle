@@ -63,7 +63,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $(window).on('swiperight', function(e){
     e.preventDefault();
-    if ( e.swipestart.coords[0] <5) {
+    if ( e.swipestart.coords[0] <10) {
       $('#user').panel("open", {
         overlayTheme: "a",
         positionTo: "window",
