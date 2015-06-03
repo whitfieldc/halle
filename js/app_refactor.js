@@ -201,8 +201,8 @@ var addSpace = function(e){
       console.log(response)
       var data = {user:{post: true}};
       $.ajax({
-        url: 'http://localhost:3000/users/'+fbData.facebook.id,
-        // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+        // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+        url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
         type: 'PUT',
         data: data
       }).done(function(response){
@@ -360,7 +360,12 @@ var spaceDetails = function() {
     overlayTheme: "a",
     positionTo: "window",
   });
-  $('p').text(this.title);
+  $('#note-display').text('Note: ' + this.title);
+  // creation = $(this)
+  googleCreate = this.creation
+  min = Math.floor((Date.now() - googleCreate) / 60000);
+  console.log(min)
+  $('#time-display').text('Posted: ' + min + ' minutes ago');
 };
 
 var markerSelect = function(spaceObject){
