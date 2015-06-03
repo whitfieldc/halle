@@ -24,7 +24,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-  
+
   markCenter(map);
   loadSpaces();
 
@@ -60,6 +60,25 @@ $(document).on("pagecreate", "#page-map", function(e, data){
       positionTo: "window",
     });
   });
+
+  $(window).on('swiperight', function(e){
+    e.preventDefault();
+    if ( e.swipestart.coords[0] <5) {
+      $('#user').panel("open", {
+        overlayTheme: "a",
+        positionTo: "window",
+      });
+    };
+  });
+
+  $('#user').on('swipeleft', function(e){
+    e.preventDefault();
+    $('#user').panel("close", {
+      overlayTheme: "a",
+      positionTo: "window",
+    });
+  });
+
 });
 
 //function definitions only ++++++++++++++++++++++++++++++++++++++++++++++++++++++
