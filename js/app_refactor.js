@@ -48,6 +48,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     console.log("claim is working")
     e.preventDefault();
     claimSpace(e);
+    // start countdown
   });
 
   $('#center').on('click', function(e){
@@ -191,7 +192,6 @@ var addSpace = function(e){
       data: data,
       headers: headers
     }).done(function(response) {
-//---------------replace with a toast notification---------------
       $('#add-space').remove();
       $('#note').remove();
       $('#popup-par').text('Added √');
@@ -199,6 +199,16 @@ var addSpace = function(e){
         $('#post-space').popup('close');
       }, 1500);
 //---------------replace with a toast notification---------------
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(response.latitude,response.longitude),
+        map: map,
+        title:  response.note,
+        icon: markerSelect(response),
+        id: response.id,
+        creation: response.converted_time,
+        animation: google.maps.Animation.DROP,
+        zIndex: google.maps.Marker.MAX_ZINDEX + 1
+      });
       var data = {user:{post: true}};
       $.ajax({
         // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
@@ -212,18 +222,9 @@ var addSpace = function(e){
       }).fail(function(response){
         console.log('failed to add space')
       });
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(response.latitude,response.longitude),
-        map: map,
-        title:  response.note,
-        icon: markerSelect(response),
-        id: response.id,
-        creation: response.converted_time,
-        animation: google.maps.Animation.DROP,
-        zIndex: google.maps.Marker.MAX_ZINDEX + 1
-      });
     }).fail(function(response) {
       alert("Could not create space");
+//---------------replace with a toast notification---------------
     });
   });
 };
@@ -231,21 +232,22 @@ var addSpace = function(e){
 var deleteSpace = function(e){
   var spaceId = userData.recentPost;
   $.ajax({
-    url: 'http://localhost:3000/spaces/'+spaceId,
     // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'DELETE'
   }).done(function(){
     $('#cancel_post').hide();
     var data = {user:{claim: true}};
     $.ajax({
-      url: 'http://localhost:3000/users/'+fbData.facebook.id,
       // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     });
   }).fail(function(){
     alert('could not destroy space');
     console.log('could not destroy space');
+//---------------replace with a toast notification---------------
   });
 };
 
@@ -272,6 +274,7 @@ var claimSpace = function(e){
       setTimeout(function () {
         $('#space-options').popup('close');
       }, 1500);
+//---------------replace with a toast notification---------------
       userData.recentClaim = spaceId;
       $('#cancel_claim').show();
       // replace with a toast notification
@@ -282,6 +285,7 @@ var claimSpace = function(e){
     calcRoute(destination, map);
   }).fail(function(response) {
     console.log("claim space ajax call failed");
+//---------------replace with a toast notification---------------
   });
 };
 
@@ -302,9 +306,11 @@ var deleteClaim = function(e){
       data: data
     }).done(function(){
       $('#cancel_claim').hide();
+//---------------add a toast notification---------------
     }).fail(function(){
       alert('could not remove claim');
       console.log('could remove claim');
+//---------------replace with a toast notification---------------
     });
   });
 };
@@ -350,7 +356,7 @@ var loadSpaces = function(){
       google.maps.event.addListener(marker, 'click', spaceDetails);
     };
   });
-}
+};
 
 var spaceDetails = function() {
   spaceId = this.id;
@@ -359,7 +365,12 @@ var spaceDetails = function() {
     overlayTheme: "a",
     positionTo: "window",
   });
-  $('p').text(this.title);
+  $('#note-display').text('Note: ' + this.title);
+  // creation = $(this)
+  googleCreate = this.creation
+  min = Math.floor((Date.now() - googleCreate) / 60000);
+  console.log(min)
+  $('#time-display').text('Posted: ' + min + ' minutes ago');
 };
 
 var markerSelect = function(spaceObject){
