@@ -16,14 +16,7 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 
 $(document).on("pagecreate", "#page-map", function(e, data){
 
-  debugger
-
-  if (userData.consume === false){
-    $('carma-false').popup('open');
-  } else {
-    console.log("shits true")
-    loadSpaces();
-  };
+  // debugger
 
   var mapOptions = {
     zoom: 13,
@@ -36,9 +29,11 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   markCenter(map);
   // loadSpaces();
 
-  ref.on('child_added', function(childSnapshot, prevChildName){
-    liveDrop(childSnapshot, prevChildName);
-  });
+  // ref.on('child_added', function(childSnapshot, prevChildName){
+  //   liveDrop(childSnapshot, prevChildName);
+  // });
+
+  consume(userData.can_consume);
 
   $('#create-space').on('click', function(e){
     e.preventDefault();
@@ -157,6 +152,7 @@ var addSpace = function(e){
         data: data
       }).done(function(response){
         console.log(response);
+        consume(response.can_consume);
       }).fail(function(response){
         console.log('fail posting')
       });
@@ -293,6 +289,19 @@ var liveDrop = function(childSnapshot, prevChildName){
   google.maps.event.addListener(marker, 'click', spaceDetails);
   console.log("Hit FIREBASE");
 }
+
+var consume = function(can_consume){
+  if (can_consume === true){
+    $('#carma-false').hide();
+      loadSpaces();
+      ref.on('child_added', function(childSnapshot, prevChildName){
+        liveDrop(childSnapshot, prevChildName);
+    });
+    console.log('shits true')
+  } else {
+    console.log("shits false")
+  };
+};
 
 // Map format???
   // $(".ui-content", this).css({
