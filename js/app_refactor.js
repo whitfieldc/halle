@@ -63,21 +63,24 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     });
   });
 
-//______________________________________
+  $('#cancel_post').on('click', function(e){
+    e.preventDefault();
+    deleteSpace();
+  });
 
-// Create the search box and link it to the UI element.
+  $('#cancel_claim').on('click', function(e){
+    e.preventDefault();
+    deleteClaim();
+  });
+
+//___________________________________________
   var input = (document.getElementById('pac-input'));
   var searchBox = new google.maps.places.SearchBox((input));
 
   map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
-
-  // Listen for the event fired when the user selects an item from the
-  // pick list. Retrieve the matching places for that item.
   google.maps.event.addListener(searchBox, 'places_changed', function(){
     localSearch(searchBox)
-  });
-
-//______________________________________
+  }); //______________________________________
 
   $(window).on('swiperight', function(e){
     e.preventDefault();
@@ -96,7 +99,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
       positionTo: "window",
     });
   });
-
 });
 
 //function definitions only ++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -122,6 +124,8 @@ var setProfile = function(authData){
   $('#user h4').text(name);
   $('#user h2').text('Carma:');
   $('#user img').attr('src', photo);
+  // $('#cancel_post').hide();
+  // $('#cancel_claim').hide();
 };
 
 var ajaxLogin = function(authData){
@@ -136,7 +140,7 @@ var ajaxLogin = function(authData){
     userData = response;
     window.location.href = '#page-map';
   }).fail(function() {
-    alert("YOU'RE A FAILURE");
+    alert("Login Failed");
   });
 };
 
@@ -175,7 +179,7 @@ var addSpace = function(e){
     var note = $('#note').val();
     var latitude  = response.A;
     var longitude = response.F;
-    var data      = {space:{latitude:+latitude, longitude:+longitude, note:note}};
+    var data      = {space:{latitude:+latitude, longitude:+longitude, note:note, poster_id:userData.id}};
     var headers   = '{"Content-Type":"application/json"}';
 
     $.ajax({
@@ -191,15 +195,16 @@ var addSpace = function(e){
       setTimeout(function () {
         $('#post-space').popup('close');
       }, 1500);
-        // replace with a toast notification
+      // replace with a toast notification
       console.log(response)
       var data = {user:{post: true}};
       $.ajax({
-        url: 'http://localhost:3000/users/'+fbData.facebook.id,
-        // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+        // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+        url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
         type: 'PUT',
         data: data
       }).done(function(response){
+        userData.recentPost = response.id //needs to go in second .done after merge
         console.log(response);
         consumeCheck(response.can_consume);
       }).fail(function(response){
@@ -215,11 +220,33 @@ var addSpace = function(e){
         animation: google.maps.Animation.DROP,
         zIndex: google.maps.Marker.MAX_ZINDEX + 1
       });
+      $('#cancel_post').show();
     }).fail(function(response) {
-      alert("shits fucked up");
+      alert("Could not create space");
     });
   });
-}
+};
+
+var deleteSpace = function(e){
+  var spaceId = userData.recentPost;
+  $.ajax({
+    // url: 'http://localhost:3000/spaces/'+spaceId,
+    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    type: 'DELETE'
+  }).done(function(){
+    $('#cancel_post').hide();
+    var data = {user:{claim: true}};
+    $.ajax({
+      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      type: 'PUT',
+      data: data
+    });
+  }).fail(function(){
+    alert('could not destroy space');
+    console.log('could not destroy space');
+  });
+};
 
 var claimSpace = function(e){
   var spaceId = e.target.name
@@ -228,8 +255,7 @@ var claimSpace = function(e){
     url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
     // url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
-    headers: headers,
-    data: '' //test without this
+    headers: headers
   }).done(function(response) {
     var data = {user:{consume: true}};
     $.ajax({
@@ -245,6 +271,7 @@ var claimSpace = function(e){
       setTimeout(function () {
         $('#space-options').popup('close');
       }, 1500);
+      userData.recentClaim = spaceId
       // replace with a toast notification
     }).fail(function(response){
       console.log('claim space user update failed');
@@ -253,6 +280,30 @@ var claimSpace = function(e){
     calcRoute(destination, map);
   }).fail(function(response) {
     console.log("claim space ajax call failed");
+  });
+};
+
+var deleteClaim = function(e){
+  var spaceId = userData.recentClaim;
+  var headers = '{"Content-Type":"application/json"}';
+  $.ajax({
+    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    // url: 'http://localhost:3000/spaces/'+spaceId,
+    type: 'PUT',
+    headers: headers
+  }).done(function(response) {
+    var data = {user:{post: true}};
+    $.ajax({
+      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      type: 'PUT',
+      data: data
+    }).done(function(){
+      $('#cancel_claim').hide();
+    }).fail(function(){
+      alert('could not remove claim');
+      console.log('could remove claim');
+    });
   });
 };
 
@@ -402,7 +453,6 @@ var spaceStale = {
   fillColor: '#A282F9',
   fillOpacity: 1
 };
-
 var searchLocation = {
   path: fontawesome.markers.UNIVERSITY,
   scale: 0.25,
@@ -411,5 +461,4 @@ var searchLocation = {
   strokeOpacity: 1,
   fillColor: 'black',
   fillOpacity: 1
-
 }
