@@ -24,13 +24,14 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-  
-  markCenter(map);
-  loadSpaces();
+
 
   ref.on('child_added', function(childSnapshot, prevChildName){
     liveDrop(childSnapshot, prevChildName);
   });
+
+  markCenter(map);
+  consumeCheck(userData.can_consume);
 
   $('#create-space').on('click', function(e){
     e.preventDefault();
@@ -44,6 +45,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   });
 
   $('#claim').on('click', function(e){
+    console.log("claim is working")
     e.preventDefault();
     claimSpace(e);
   });
@@ -69,6 +71,33 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   $('#cancel_claim').on('click', function(e){
     e.preventDefault();
     deleteClaim();
+  });
+
+//___________________________________________
+  var input = (document.getElementById('pac-input'));
+  var searchBox = new google.maps.places.SearchBox((input));
+
+  map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
+  google.maps.event.addListener(searchBox, 'places_changed', function(){
+    localSearch(searchBox)
+  }); //______________________________________
+
+  $(window).on('swiperight', function(e){
+    e.preventDefault();
+    if ( e.swipestart.coords[0] <10) {
+      $('#user').panel("open", {
+        overlayTheme: "a",
+        positionTo: "window",
+      });
+    };
+  });
+
+  $('#user').on('swipeleft', function(e){
+    e.preventDefault();
+    $('#user').panel("close", {
+      overlayTheme: "a",
+      positionTo: "window",
+    });
   });
 });
 
@@ -166,8 +195,21 @@ var addSpace = function(e){
       setTimeout(function () {
         $('#post-space').popup('close');
       }, 1500);
-    // replace with a toast notification
-      userData.recentPost = response.id //needs to go in second .done after merge
+      // replace with a toast notification
+      console.log(response)
+      var data = {user:{post: true}};
+      $.ajax({
+        url: 'http://localhost:3000/users/'+fbData.facebook.id,
+        // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+        type: 'PUT',
+        data: data
+      }).done(function(response){
+        userData.recentPost = response.id //needs to go in second .done after merge
+        console.log(response);
+        consumeCheck(response.can_consume);
+      }).fail(function(response){
+        console.log('fail posting')
+      });
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(response.latitude,response.longitude),
         map: map,
@@ -272,7 +314,6 @@ var calcRoute = function(finalDestination, map) {
   directionsDisplay.setMap(map);
 
   getLocation().then(function(currentLocation){
-    debugger
     var request = {
       origin: currentLocation,
       destination: finalDestination,
@@ -346,6 +387,38 @@ var liveDrop = function(childSnapshot, prevChildName){
   console.log("Hit firebase");
 }
 
+//Search
+var localSearch = function(searchObject){
+  var places = searchObject.getPlaces();
+    if (typeof searchMarker !== 'undefined') {
+      searchMarker.setMap(null)
+    };
+
+  for (var i = 0, place; place = places[i]; i++) {
+    searchMarker = new google.maps.Marker({
+      position: place.geometry.location,
+      map: map,
+      icon: searchLocation
+      // animation: google.maps.Animation.DROP
+    });
+    map.setZoom(16);
+    map.panTo(place.geometry.location);
+  }
+}
+
+var consumeCheck = function(can_consume){
+  if (can_consume === true){
+    $('#carma-false').hide();
+      loadSpaces();
+      ref.on('child_added', function(childSnapshot, prevChildName){
+        liveDrop(childSnapshot, prevChildName);
+    });
+    console.log('shits true')
+  } else {
+    console.log("shits false")
+  };
+};
+
 // Map format???
   // $(".ui-content", this).css({
    // height: $(window).height(),
@@ -380,3 +453,12 @@ var spaceStale = {
   fillColor: '#A282F9',
   fillOpacity: 1
 };
+var searchLocation = {
+  path: fontawesome.markers.UNIVERSITY,
+  scale: 0.25,
+  strokeWeight: 0.2,
+  strokeColor: 'black',
+  strokeOpacity: 1,
+  fillColor: 'black',
+  fillOpacity: 1
+}
