@@ -10,16 +10,20 @@
     <script src="js/fontawesome-markers.min.js"></script>
     <script src="js/jquery-2.1.4.min.js"></script>
     <script charset="utf-8" src="js/ajax.js"></script>
-    <script charset="utf-8" src="js/set_marker.js"></script>
     <script src="js/jquery.mobile.config.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script src="cordova.js"></script>
     <script src="js/firebase.min.js"></script>
-
+    <script charset="utf-8" src="js/app_refactor.js"></script>
 </head>
 <body>
-  <div id="pageMap" data-role="page" data-url="map-page">
+
+  <div id="landing-screen" data-role="page">
+    <button id="login">Login</button>
+  </div>
+
+  <div id="page-map" data-role="page" data-url="map-page">
 
     <div data-role="popup" id="post-space">
       <h4 id="popup-par">ADD A PARKING SPACE</h4>
@@ -37,12 +41,11 @@
     <header data-role="header">
       <h3>Halle</h3>
       <button id="create-space">List Opening</button>
-      <button id="login">Login</button>
     </header>
 
     <div id="content" data-role="content">
-      <div id="map-canvas" >
-      </div>
+      <div id="map-canvas"></div>
+      <button id="center">Center</button>
     </div>
 
   </div>
