@@ -457,7 +457,7 @@ var bindPause = function() {
 };
 
 var onPause = function(){
-  alert('pause')
+  // alert('pause')
   Firebase.goOffline();
 };
 
@@ -469,7 +469,7 @@ var onResume = function(){
   clearMarkers();
   Firebase.goOnline();
   loadSpaces();
-  alert("resume works")
+  // alert("resume works")
 };
 
 // Map format???
