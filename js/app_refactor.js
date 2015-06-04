@@ -39,11 +39,13 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
-    console.log("OMG")
     $('#post-space').popup("open");
-    // debugger;
+    $(':input','#post-space').val('');
+    $('#post-space').popup("open", {
+      overlayTheme: "a",
+      positionTo: "window",
+    });
     $('#add-space').on('click', function(e){
-      debugger;
       e.preventDefault();
       addSpace(e);
     });
@@ -185,12 +187,15 @@ var addSpace = function(){
       data: data,
       headers: headers
     }).done(function(response) {
-      $('#add-space').remove();
-      $('#note').remove();
-      $('#popup-par').text('Added √');
-      setTimeout(function () {
-        $('#post-space').popup('close');
-      }, 1500);
+      $('#post-space').popup('close');
+      if ($(':input','#post-space').val().length > 1) {
+        $("#post-space").on("popupafterclose", function () {
+          $('#post-space-confirmation').popup('open')
+          setTimeout(function () {
+            $('#post-space-confirmation').popup('close');
+          }, 1500);
+        })
+      }
 //---------------replace with a toast notification---------------
 
       var marker = new google.maps.Marker({
@@ -204,7 +209,7 @@ var addSpace = function(){
         zIndex: google.maps.Marker.MAX_ZINDEX + 1,
         draggable: true
       });
-
+      console.log(response);
       userData.recentPost = response.id;
 
       google.maps.event.addListener(marker, 'click', spaceDetails);
@@ -219,8 +224,8 @@ var addSpace = function(){
         data: data
       }).done(function(response){
         $('#cancel_post').show();
-        userData.recentPost = response.id //needs to go in second .done after merge
-        console.log(response);
+        // userData.recentPost = response.id //needs to go in second .done after merge
+        // console.log(response);
         consumeCheckAdd(response.can_consume);
         // consumeCheck.off();
       }).fail(function(response){
@@ -238,7 +243,6 @@ var geocodePosition = function(pos){
   geocoder.geocode({latLng: pos}, function(results, status){
     if (status == google.maps.GeocoderStatus.OK) {
       var spaceId = userData.recentPost;
-      debugger
       var headers = '{"Content-Type":"application/json"}';
       var latitude = results[0].geometry.location.A;
       var longitude = results[0].geometry.location.F;
@@ -294,13 +298,13 @@ var claimSpace = function(e){
       type: 'PUT',
       data: data
     }).done(function(response){
-      $('#space-options p').remove();
-      $('#space-options a').remove();
-      $('#space-options button').remove();
-      $('#space-options h4').text('Claimed √');
-      setTimeout(function () {
-        $('#space-options').popup('close');
-      }, 1500);
+      $('#space-options').popup('close');
+      $('#space-options').on('popupafterclose', function(){
+      $('#claim-space-confirmation').popup('open')
+      setTimeout(function(){
+        $('#claim-space-confirmation').popup('close');
+        }, 1500);
+      })
 //---------------replace with a toast notification---------------
       userData.recentClaim = spaceId;
       $('#cancel_claim').show();
@@ -325,10 +329,10 @@ var countdownTimer = function(latitude, longitude){
   getLocation().then(function(response){
     var from = response;
     var to = new google.maps.LatLng(latitude, longitude);
-    var distance = google.maps.geometry.spherical.computeDistanceBetween(from, to);
+    var distance = getDistance(to, from);
 
     setTimeout( function(distance){
-      if (distance > 644) { //distance in meters
+      if (distance > 0.4) { //distance in miles
         cancelClaim();
         $('#countdown-end').popup("open");
       };
@@ -339,16 +343,18 @@ var countdownTimer = function(latitude, longitude){
 var cancelClaim = function(e){
   var spaceId = userData.recentClaim;
   var headers = '{"Content-Type":"application/json"}';
+  var data = {space:{change_location: false}};
   $.ajax({
     url: baseUrl + 'spaces/'+spaceId,
     type: 'PUT',
-    headers: headers
+    headers: headers,
+    data: data
   }).done(function(response) {
-    var data = {user:{post: true}};
+    var userData = {user:{post: true}};
     $.ajax({
       url: baseUrl + 'users/'+fbData.facebook.id,
       type: 'PUT',
-      data: data
+      data: userData
     }).done(function(){
       $('#cancel_claim').hide();
       // clear countdown function
@@ -415,7 +421,7 @@ var spaceDetails = function() {
   // creation = $(this)
   googleCreate = this.creation
   min = Math.floor((Date.now() - googleCreate) / 60000);
-  console.log(min)
+  // console.log(min)
   $('#time-display').text('Posted: ' + min + ' minutes ago');
 };
 
@@ -432,20 +438,24 @@ var liveDrop = function(childSnapshot, prevChildName){
   var newChild = childSnapshot.val();
   var newChildKey = Object.keys(newChild)[0];
   var spaceObj = JSON.parse(newChild[newChildKey]);
-
-  var marker = new google.maps.Marker({
-    position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
-    map: map,
-    animation: google.maps.Animation.DROP,
-    title:  spaceObj.note,
-    icon: markerSelect(spaceObj), //set marker according to age
-    id: spaceObj.id,
-    creation: spaceObj.converted_time
-  });
-  markerArray.push(marker)
-  google.maps.event.addListener(marker, 'click', spaceDetails);
+  // console.log(spaceObj.poster_id);
+  // console.log(userData.id);
+  if (spaceObj.poster_id != userData.id){
+    // console.log('this shouldnt happen');
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
+      map: map,
+      animation: google.maps.Animation.DROP,
+      title:  spaceObj.note,
+      icon: markerSelect(spaceObj), //set marker according to age
+      id: spaceObj.id,
+      creation: spaceObj.converted_time
+    });
+    markerArray.push(marker)
+    google.maps.event.addListener(marker, 'click', spaceDetails);
+  }
   console.log("Hit firebase");
-  console.log(prevChildName)
+  // console.log(prevChildName)
 }
 
 //Search
@@ -485,6 +495,7 @@ var consumeCheckAdd = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
     loadSpaces();
+    console.log('carma fucking us again')
     console.log('can_consume = true')
   } else {
     console.log('can_consume = false')
@@ -534,6 +545,50 @@ $(".ui-content", this).css({
  height: $(window).height(),
  width: $(window).width()
 });
+
+// Distance Calculations
+var closestSpace = function(){
+  var closest = markerArray[0].position;
+  var distance;
+  getLocation().then(function(currentLocation){
+    var from = currentLocation
+    for(var i = 1; i < markerArray.length; i++){
+      if(getDistance(currentLocation, markerArray[i].position) < getDistance(currentLocation, closest)){
+        closest = markerArray[i].position
+      };
+    };
+  var distance = getDistance(currentLocation, closest);
+  if (distance >= 1){
+    alert("Closest Space is "+distance+" miles away.")
+  }
+  else {
+    distance *= 5280
+    alert("Closest Space is "+distance+" feet away.")
+  }
+  return closest;
+  });
+};
+
+var closestSpaceList = function(radius){
+  var closestArray = [ ]
+  getLocation().then(function(currentLocation){
+    for(var i = 1; i < markerArray.length; i++){
+      if(getDistance(currentLocation, markerArray[i].position) <= radius) {
+        closestArray.push(markerArray[i])
+      };
+    };
+  debugger;
+  return closestArray; // Call .length to get the number of spaces, OBVI
+  });
+};
+
+var getDistance = function(to, from){
+  var dist = google.maps.geometry.spherical.computeDistanceBetween(to, from);
+  dist *= 0.00062137 // return distance in miles
+  dist = Math.round(1000.0*dist)/1000.0; //round to nearest 100th of a mile
+  console.log(dist)
+  return dist
+}
 
 // Space markers CSS -----------------------------------------
 var currentLocation = {
