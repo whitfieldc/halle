@@ -2,6 +2,7 @@ var ref = new Firebase("https://halle.firebaseio.com");
 var fbData;
 var userData;
 
+
 $(document).on("pagecreate", "#landing-screen", function(e, data){
 
   $('#login').on('click', function(e){
@@ -17,7 +18,7 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 
 $(document).on("pagecreate", "#page-map", function(e, data){
   var directionsDisplay;
-  markerArray = []
+  markerArray = [];
   var mapOptions = {
     zoom: 13,
     disableDefaultUI: true,
@@ -26,32 +27,39 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
+  ref.on('child_added', function(childSnapshot, prevChildName){
+    liveDrop(childSnapshot, prevChildName);
+  });
+
   markCenter(map);
   consumeCheck(userData.can_consume);
 
-  $('#create-space').on('click', function(e){
+  $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
+    console.log("OMG")
     $('#post-space').popup("open", {
       overlayTheme: "a",
       positionTo: "window",
     });
     $('#add-space').on('click', function(e){
+      e.preventDefault();
       addSpace(e);
     });
   });
 
-  $('#claim').on('click', function(e){
-    console.log("claim is working")
+
+  $('#page-map').on('click', '#claim', function(e){
+    console.log("claim is working");
     e.preventDefault();
     claimSpace(e);
   });
 
-  $('#center').on('click', function(e){
+  $('#page-map').on('click', '#center', function(e){
     e.preventDefault();
     centerMap(map);
   });
 
-  $('#profile').on('click', function(e){
+  $('#page-map').on('click', '#profile', function(e){
     e.preventDefault();
     $('#user').panel("open", {
       overlayTheme: "a",
@@ -59,28 +67,25 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     });
   });
 
-  $('#cancel_post').on('click', function(e){
+  $('#page-map').on('click', '#cancel_post', function(e){
     e.preventDefault();
     deleteSpace();
   });
 
-  $('#cancel_claim').on('click', function(e){
+  $('#page-map').on('click', '#cancel_claim', function(e){
     e.preventDefault();
     cancelClaim();
     // clear overlay?
     centerMap(map);
   });
 
-
-
-//___________________________________________
   var input = (document.getElementById('pac-input'));
   var searchBox = new google.maps.places.SearchBox((input));
 
   map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
   google.maps.event.addListener(searchBox, 'places_changed', function(){
     localSearch(searchBox)
-  }); //______________________________________
+  });
 
   $(window).on('swiperight', function(e){
     e.preventDefault();
@@ -175,7 +180,7 @@ var markCenter = function(map){
   });
 };
 
-var addSpace = function(e){
+var addSpace = function(){
   getLocation().then(function(response){
     var note = $('#note').val();
     var latitude  = response.A;
@@ -196,47 +201,84 @@ var addSpace = function(e){
       setTimeout(function () {
         $('#post-space').popup('close');
       }, 1500);
-      // replace with a toast notification
-      console.log(response)
+//---------------replace with a toast notification---------------
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(response.latitude,response.longitude),
+        map: map,
+        title:  response.note,
+        icon: markerSelect(response),
+        id: response.id,
+        creation: response.converted_time,
+        animation: google.maps.Animation.DROP,
+        zIndex: google.maps.Marker.MAX_ZINDEX + 1,
+        draggable: true
+      });
+
+      userData.recentPost = response.id;
+
+      google.maps.event.addListener(marker, 'click', spaceDetails);
+      google.maps.event.addListener(marker, "dragend", function() {
+        geocodePosition(marker.getPosition());
+      });
+
       var data = {user:{post: true}};
       $.ajax({
-        // url: 'http://localhost:3000/users/'+fbData.facebook.id,
         url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+        // url: 'http://localhost:3000/users/'+fbData.facebook.id,
         type: 'PUT',
         data: data
       }).done(function(response){
         $('#cancel_post').show();
         userData.recentPost = response.id //needs to go in second .done after merge
         console.log(response);
-        consumeCheck(response.can_consume);
+        consumeCheckAdd(response.can_consume);
+        // consumeCheck.off();
       }).fail(function(response){
-        console.log('fail posting')
+        console.log('failed to add space')
       });
-      // var marker = new google.maps.Marker({
-      //   position: new google.maps.LatLng(response.latitude,response.longitude),
-      //   map: map,
-      //   title:  response.note,
-      //   icon: markerSelect(response),
-      //   id: response.id,
-      //   creation: response.converted_time,
-      //   animation: google.maps.Animation.DROP,
-      //   zIndex: google.maps.Marker.MAX_ZINDEX + 1
-      // });
-      console.log("Console Log")
     }).fail(function(response) {
       alert("Could not create space");
+//---------------replace with a toast notification---------------
     });
   });
 };
 
-var deleteSpace = function(e){
+var geocodePosition = function(pos){
+  geocoder = new google.maps.Geocoder();
+  geocoder.geocode({latLng: pos}, function(results, status){
+    if (status == google.maps.GeocoderStatus.OK) {
+      var spaceId = userData.recentPost;
+      debugger
+      var headers = '{"Content-Type":"application/json"}';
+      var latitude = results[0].geometry.location.A;
+      var longitude = results[0].geometry.location.F;
+      var data = {space:{latitude: latitude, longitude: longitude, change_location: true}};
+      $.ajax({
+        url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+        // url: 'http://localhost:3000/spaces/'+spaceId,
+        type: 'PUT',
+        headers: headers,
+        data: data
+      }).done(function(){console.log('space location updated')
+      }).fail(function(){console.log('space location could not be updated')})
+    }else{
+      console.log('Cannot determine new location. Status:'+status);
+    };
+  });
+};
+
+var deleteSpace = function(){
   var spaceId = userData.recentPost;
   $.ajax({
-    // url: 'http://localhost:3000/spaces/'+spaceId,
     url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    // url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'DELETE'
   }).done(function(){
     $('#cancel_post').hide();
+    $('#user').panel("close", {
+      overlayTheme: "a",
+      positionTo: "window",
+    });
     var data = {user:{claim: true}};
     $.ajax({
       url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
@@ -247,17 +289,21 @@ var deleteSpace = function(e){
   }).fail(function(){
     alert('could not destroy space');
     console.log('could not destroy space');
+//---------------replace with a toast notification---------------
   });
 };
 
 var claimSpace = function(e){
   var spaceId = e.target.name
   var headers = '{"Content-Type":"application/json"}';
+  var spaceInfo
+  var data = {space:{change_location: false}};
   $.ajax({
     url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
     // url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
-    headers: headers
+    headers: headers,
+    data: data
   }).done(function(response) {
     var data = {user:{consume: true}};
     $.ajax({
@@ -273,18 +319,45 @@ var claimSpace = function(e){
       setTimeout(function () {
         $('#space-options').popup('close');
       }, 1500);
+//---------------replace with a toast notification---------------
       userData.recentClaim = spaceId;
       $('#cancel_claim').show();
       // replace with a toast notification
     }).fail(function(response){
       console.log('claim space user update failed');
     });
+    console.log(response)
     var destination = response.latitude +","+ response.longitude;
     clearMarkers();
     calcRoute(destination, map);
+    countdownTimer(response.latitude, response.longitude);
   }).fail(function(response) {
     console.log("claim space ajax call failed");
+//---------------replace with a toast notification---------------
   });
+};
+
+var countdownTimer = function(latitude, longitude){
+  $('#countdown-start').popup("open", {
+    overlayTheme: "a",
+    positionTo: "window",
+  });
+
+  getLocation().then(function(response){
+    var from = response;
+    var to = new google.maps.LatLng(latitude, longitude);
+    var distance = google.maps.geometry.spherical.computeDistanceBetween(from, to);
+
+    setTimeout( function(distance){
+      if (distance > 644) { //distance in meters
+        cancelClaim();
+        $('#countdown-end').popup("open", {
+          overlayTheme: "a",
+          positionTo: "window",
+        });
+      };
+    }, 300000); //5 minutes
+  })
 };
 
 var cancelClaim = function(e){
@@ -304,11 +377,19 @@ var cancelClaim = function(e){
       data: data
     }).done(function(){
       $('#cancel_claim').hide();
+      // clear countdown function
+//---------------add a toast notification---------------
       directionsDisplay.setMap(null)
+      clearMarkers();
+      $('#user').panel("close", {
+        overlayTheme: "a",
+        positionTo: "window",
+      });
       loadSpaces();
     }).fail(function(){
       alert('could not remove claim');
       console.log('could remove claim');
+//---------------replace with a toast notification---------------
     });
   });
 };
@@ -360,7 +441,7 @@ var loadSpaces = function(){
       google.maps.event.addListener(marker, 'click', spaceDetails);
     };
   });
-}
+};
 
 var spaceDetails = function() {
   spaceId = this.id;
@@ -429,28 +510,69 @@ var localSearch = function(searchObject){
 var consumeCheck = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
-      loadSpaces();
-      ref.on('child_added', function(childSnapshot, prevChildName){
-        liveDrop(childSnapshot, prevChildName);
+    loadSpaces();
+    ref.on('child_added', function(childSnapshot, prevChildName){
+      liveDrop(childSnapshot, prevChildName);
     });
-    console.log('shits true')
+    console.log('can_consume = true')
   } else {
-    console.log("shits false")
+    console.log('can_consume = false')
+  };
+};
+
+var consumeCheckAdd = function(can_consume){
+  if (can_consume === true){
+    $('#carma-false').hide();
+    loadSpaces();
+    console.log('can_consume = true')
+  } else {
+    console.log('can_consume = false')
   };
 };
 
 var clearMarkers = function() {
   for (var i = 0; i < markerArray.length; i++ ) {
     markerArray[i].setMap(null);
-  }
-  markerArray.length = 0;
-}
+  };
+  markerArray = [];
+};
+
+var onLoad = function() {
+  // alert('load')
+  document.addEventListener("deviceready", onDeviceReady, false);
+};
+
+var onDeviceReady = function() {
+  // alert('ready')
+  bindPause();
+  bindResume();
+};
+
+var bindPause = function() {
+  document.addEventListener('pause', onPause, false);
+};
+
+var onPause = function(){
+  // alert('pause')
+  Firebase.goOffline();
+};
+
+var bindResume = function(){
+  document.addEventListener('resume', onResume, false);
+};
+
+var onResume = function(){
+  clearMarkers();
+  Firebase.goOnline();
+  loadSpaces();
+  // alert("resume works")
+};
 
 // Map format???
-  // $(".ui-content", this).css({
-   // height: $(window).height(),
-   // width: $(window).width()
-// });
+$(".ui-content", this).css({
+ height: $(window).height(),
+ width: $(window).width()
+});
 
 // Space markers CSS -----------------------------------------
 var currentLocation = {

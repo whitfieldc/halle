@@ -12,12 +12,12 @@
     <script charset="utf-8" src="js/ajax.js"></script>
     <script src="js/jquery.mobile.config.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places&sensor=false"></script>
-    <script src="cordova.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&sensor=false"></script>
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
     <script src="js/firebase.min.js"></script>
     <script charset="utf-8" src="js/app_refactor.js"></script>
 </head>
-<body>
+<body onload="onLoad()">
 
   <div id="landing-screen" data-role="page">
     <button id="login">Login</button>
@@ -38,7 +38,17 @@
       <p id="time-display">minutes ago</p>
       <p id="note-display">No notes given.</p>
       <button id="claim">Claim parking</button>
-    </div>    
+    </div>
+
+    <div data-role="popup" id="countdown-start">
+      <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+      <h4>You have 5 minutes to reach your destination!</h4>
+    </div>
+
+    <div data-role="popup" id="countdown-end">
+      <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+      <h4>5 minutes have passed. Your claim has expired.</h4>
+    </div>
 
     <header data-role="header">
       <button id="profile">Profile</button>
@@ -67,6 +77,9 @@
     <div id="search-area">
       <textarea id="pac-input" placeholder="Search Box"></textarea>
     </div>
+  </div>
+  <div data-role="footer" data-position="fixed">
+  <a href="#" data-rel="back">OK</a>
   </div>
 </body>
 </html>
