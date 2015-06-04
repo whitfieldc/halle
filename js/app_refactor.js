@@ -30,8 +30,9 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   markCenter(map);
   consumeCheck(userData.can_consume);
 
-  $('#create-space').on('click', function(e){
+  $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
+    console.log("OMG")
     $('#post-space').popup("open", {
       overlayTheme: "a",
       positionTo: "window",
@@ -41,18 +42,18 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     });
   });
 
-  $('#claim').on('click', function(e){
+  $('#page-map').on('click', '#claim', function(e){
     console.log("claim is working")
     e.preventDefault();
     claimSpace(e);
   });
 
-  $('#center').on('click', function(e){
+  $('#page-map').on('click', '#center', function(e){
     e.preventDefault();
     centerMap(map);
   });
 
-  $('#profile').on('click', function(e){
+  $('#page-map').on('click', '#profile', function(e){
     e.preventDefault();
     $('#user').panel("open", {
       overlayTheme: "a",
@@ -60,12 +61,12 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     });
   });
 
-  $('#cancel_post').on('click', function(e){
+  $('#page-map').on('click', '#cancel_post', function(e){
     e.preventDefault();
     deleteSpace();
   });
 
-  $('#cancel_claim').on('click', function(e){
+  $('#page-map').on('click', '#cancel_claim', function(e){
     e.preventDefault();
     cancelClaim();
     // clear overlay?
@@ -304,6 +305,7 @@ var cancelClaim = function(e){
     }).done(function(){
       $('#cancel_claim').hide();
       directionsDisplay.setMap(null)
+      clearMarkers();
       loadSpaces();
     }).fail(function(){
       alert('could not remove claim');
@@ -456,7 +458,7 @@ var onPause = function(){
   Firebase.goOffline();
 };
 
-var bindResume() = function(){
+var bindResume = function(){
   document.addEventListener('resume', onResume, false);
 };
 
@@ -464,6 +466,7 @@ var onResume = function(){
   clearMarkers();
   Firebase.goOnline();
   loadSpaces();
+  alert("resume works")
 };
 
 // Map format???
