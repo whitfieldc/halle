@@ -22,6 +22,12 @@
       following tag to your config.xml; you will still have the INTERNET
       permission on your app, which PhoneGap requires.
     -->
+    <icon src="icon.png" />
+    
+    <gap:splash src="ldpi.png" gap:platform="android" gap:qualifier="ldpi" />
+    <gap:splash src="mdpi.png" gap:platform="android" gap:qualifier="mdpi" />
+    <gap:splash src="hdpi.png" gap:platform="android" gap:qualifier="hdpi" />
+    <gap:splash src="xhdpi.png" gap:platform="android" gap:qualifier="xhdpi" />
     
     <gap:plugin name="org.apache.cordova.inappbrowser" />
     <access origin="*"/>
