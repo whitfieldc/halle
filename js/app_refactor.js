@@ -37,6 +37,17 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   markCenter(map);
   consumeCheck(userData.can_consume);
 
+  $('#test').on('click', function(e){
+    e.preventDefault();
+    
+  })
+
+  $('#logout').on('click', function(e){
+    e.preventDefault();
+    ref.unauth();
+    window.location.href = '#landing-screen';
+  });
+
   $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
     $('#post-space').popup("open");
