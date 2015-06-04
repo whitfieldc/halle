@@ -2,6 +2,7 @@ var ref = new Firebase("https://halle.firebaseio.com");
 var fbData;
 var userData;
 
+
 $(document).on("pagecreate", "#landing-screen", function(e, data){
 
   $('#login').on('click', function(e){
@@ -434,9 +435,36 @@ var consumeCheck = function(can_consume){
 var clearMarkers = function() {
   for (var i = 0; i < markerArray.length; i++ ) {
     markerArray[i].setMap(null);
-  }
-  markerArray.length = 0;
-}
+  };
+  markerArray = [];
+};
+
+var onLoad = function() {
+  document.addEventListener("deviceready", onDeviceReady, false);
+};
+
+var onDeviceReady = function() {
+  bindPause();
+  bindResume();
+};
+
+var bindPause = function() {
+  document.addEventListener('pause', onPause, false);
+};
+
+var onPause = function(){
+  Firebase.goOffline();
+};
+
+var bindResume() = function(){
+  document.addEventListener('resume', onResume, false);
+};
+
+var onResume = function(){
+  clearMarkers();
+  Firebase.goOnline();
+  loadSpaces();
+};
 
 // Map format???
   // $(".ui-content", this).css({
