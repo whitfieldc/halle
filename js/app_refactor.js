@@ -1,8 +1,8 @@
 var ref = new Firebase("https://halle.firebaseio.com");
 var fbData;
 var userData;
-// var baseUrl = 'http://localhost:3000/'
-var baseUrl = 'http://calm-island-3256.herokuapp.com/'
+var baseUrl = 'http://localhost:3000/'
+// var baseUrl = 'http://calm-island-3256.herokuapp.com/'
 
 
 $(document).on("pagecreate", "#landing-screen", function(e, data){
@@ -359,16 +359,18 @@ var countdownTimer = function(latitude, longitude){
 var cancelClaim = function(e){
   var spaceId = userData.recentClaim;
   var headers = '{"Content-Type":"application/json"}';
+  var data = {space:{change_location: false}};
   $.ajax({
     url: baseUrl + 'spaces/'+spaceId,
     type: 'PUT',
-    headers: headers
+    headers: headers,
+    data: data
   }).done(function(response) {
-    var data = {user:{post: true}};
+    var userData = {user:{post: true}};
     $.ajax({
       url: baseUrl + 'users/'+fbData.facebook.id,
       type: 'PUT',
-      data: data
+      data: userData
     }).done(function(){
       $('#cancel_claim').hide();
       // clear countdown function
