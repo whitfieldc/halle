@@ -4,6 +4,14 @@ var userData;
 // var baseUrl = 'http://localhost:3000/'
 var baseUrl = 'http://calm-island-3256.herokuapp.com/'
 
+$(document).on('pagebeforecreate', function(event){
+  var localFacebook = JSON.parse(window.localStorage.getItem("fbData"));
+  if (localFacebook) {
+    alert('hello')
+    ajaxLogin(localFacebook);
+    setProfile(localFacebook);
+  }
+});
 
 $(document).on("pagecreate", "#landing-screen", function(e, data){
 
@@ -140,13 +148,16 @@ var setProfile = function(authData){
 };
 
 var ajaxLogin = function(authData){
+  console.log("hitting login")
   userId = authData.facebook.id;
+  console.log(userId)
   var ajaxData = {user:{oauth_id:userId}};
   $.ajax({
     url: baseUrl + 'users/'+userId+'/identify',
     type: 'GET',
     data: ajaxData
   }).done(function(response) {
+    console.log(response);
     userData = response;
     window.location.href = '#page-map';
   }).fail(function() {
