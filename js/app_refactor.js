@@ -38,6 +38,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
       positionTo: "window",
     });
     $('#add-space').on('click', function(e){
+      e.preventDefault();
       addSpace(e);
     });
   });
@@ -73,14 +74,13 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     centerMap(map);
   });
 
-//___________________________________________
   var input = (document.getElementById('pac-input'));
   var searchBox = new google.maps.places.SearchBox((input));
 
   map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
   google.maps.event.addListener(searchBox, 'places_changed', function(){
     localSearch(searchBox)
-  }); //______________________________________
+  });
 
   $(window).on('swiperight', function(e){
     e.preventDefault();
@@ -208,7 +208,8 @@ var addSpace = function(e){
         $('#cancel_post').show();
         userData.recentPost = response.id //needs to go in second .done after merge
         console.log(response);
-        consumeCheck(response.can_consume);
+        consumeCheckAdd(response.can_consume);
+        // consumeCheck.off();
       }).fail(function(response){
         console.log('fail posting')
       });
@@ -222,7 +223,6 @@ var addSpace = function(e){
       //   animation: google.maps.Animation.DROP,
       //   zIndex: google.maps.Marker.MAX_ZINDEX + 1
       // });
-      console.log("Console Log")
     }).fail(function(response) {
       alert("Could not create space");
     });
@@ -432,13 +432,23 @@ var localSearch = function(searchObject){
 var consumeCheck = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
-      loadSpaces();
-      ref.on('child_added', function(childSnapshot, prevChildName){
-        liveDrop(childSnapshot, prevChildName);
+    loadSpaces();
+    ref.on('child_added', function(childSnapshot, prevChildName){
+      liveDrop(childSnapshot, prevChildName);
     });
-    console.log('shits true')
+    console.log('can_consume = true')
   } else {
-    console.log("shits false")
+    console.log('can_consume = false')
+  };
+};
+
+var consumeCheckAdd = function(can_consume){
+  if (can_consume === true){
+    $('#carma-false').hide();
+    loadSpaces();
+    console.log('can_consume = true')
+  } else {
+    console.log('can_consume = false')
   };
 };
 
