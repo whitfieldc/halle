@@ -312,14 +312,13 @@ var claimSpace = function(e){
       type: 'PUT',
       data: data
     }).done(function(response){
-
-      // $('#space-options p').remove();
-      // $('#space-options a').remove();
-      // $('#space-options button').remove();
-      // $('#space-options h4').text('Claimed √');
-      // setTimeout(function () {
-      //   $('#space-options').popup('close');
-      // }, 1500);
+      $('#space-options').popup('close');
+      $('#space-options').on('popupafterclose', function(){
+      $('#claim-space-confirmation').popup('open')
+      setTimeout(function(){
+        $('#claim-space-confirmation').popup('close');
+        }, 1500);
+      })
 //---------------replace with a toast notification---------------
       userData.recentClaim = spaceId;
       $('#cancel_claim').show();
