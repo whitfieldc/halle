@@ -197,14 +197,17 @@ var addSpace = function(){
       data: data,
       headers: headers
     }).done(function(response) {
+      debugger
       $('#post-space').popup('close');
-      $("#post-space").on("popupafterclose", function () {
-        $('#post-space-confirmation').popup('open')
-        setTimeout(function () {
-          $('#post-space-confirmation').popup('close');
-        }, 1500);
-        onloadpopupOpen();
-      })
+      if ($(':input','#post-space').val().length > 1) {
+        $("#post-space").on("popupafterclose", function () {
+          $('#post-space-confirmation').popup('open')
+          setTimeout(function () {
+            $('#post-space-confirmation').popup('close');
+          }, 1500);
+          onloadpopupOpen();
+        })
+      }
 //---------------replace with a toast notification---------------
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(response.latitude,response.longitude),
