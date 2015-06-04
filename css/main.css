@@ -41,3 +41,13 @@ a {
   bottom: 0%;
   z-index: 2;
 }
+
+#create-space {
+position: absolute;
+top: 85%;
+z-index: 100;
+right: 3%;
+width: 4.7em;
+border-radius: 35px;
+height: 4.5em;
+}
