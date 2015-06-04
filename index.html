@@ -6,8 +6,8 @@
     <meta name="viewport" content="width-device-width, initial-scale-1" />
 
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
-    <link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
-    <link rel="stylesheet" href="themes/blue.css" />
+    <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+    <link rel="stylesheet" href="css/blue.min.css" />
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
@@ -68,9 +68,11 @@
 
     <div id="user" data-role="panel" data-position="left" data-display="overlay">
       <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-      <img/>
-      <h4></h4>
+      <div class="round">
+        <img />
+      </div>
       <h2></h2>
+      <h4></h4>
       <button id="cancel_post">Cancel recent post</button>
       <button id="cancel_claim">Cancel recent claim</button>
       <button id="logout">Logout</button>

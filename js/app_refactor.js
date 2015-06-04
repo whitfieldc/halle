@@ -4,7 +4,6 @@ var userData;
 // var baseUrl = 'http://localhost:3000/'
 var baseUrl = 'http://calm-island-3256.herokuapp.com/'
 
-
 $(document).on("pagecreate", "#landing-screen", function(e, data){
 
   $('#login').on('click', function(e){
@@ -119,8 +118,8 @@ var setProfile = function(authData){
   var userId = authData.facebook.id;
   var name = authData.facebook.cachedUserProfile.name;
   var photo = authData.facebook.cachedUserProfile.picture.data.url;
-  $('#user h4').text(name);
-  $('#user h2').text('Carma:');
+  $('#user h2').text(name);
+  $('#user h4').text('Carma:');
   $('#user img').attr('src', photo);
   $('#cancel_post').hide();
   $('#cancel_claim').hide();
