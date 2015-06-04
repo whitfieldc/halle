@@ -33,6 +33,14 @@ a {
   text-decoration: none;
 }
 
+h1 {
+  margin: 0px;
+}
+
+h2 {
+  margin: 0px;
+}
+
 #pac-input{
   height: 50px;
   /*margin: 0 auto;*/
