@@ -4,7 +4,6 @@ var userData;
 // var baseUrl = 'http://localhost:3000/'
 var baseUrl = 'http://calm-island-3256.herokuapp.com/'
 
-
 $(document).on("pagecreate", "#landing-screen", function(e, data){
 
   $('#login').on('click', function(e){
@@ -40,6 +39,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
+    $('#post-space').popup("open");
     $(':input','#post-space').val('');
     $('#post-space').popup("open", {
       overlayTheme: "a",
@@ -65,10 +65,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on('click', '#profile', function(e){
     e.preventDefault();
-    $('#user').panel("open", {
-      overlayTheme: "a",
-      positionTo: "window",
-    });
+    $('#user').panel("open");
   });
 
   $('#page-map').on('click', '#cancel_post', function(e){
@@ -86,7 +83,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   var input = (document.getElementById('pac-input'));
   var searchBox = new google.maps.places.SearchBox((input));
 
-  map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
   google.maps.event.addListener(searchBox, 'places_changed', function(){
     localSearch(searchBox)
   });
@@ -94,19 +90,13 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   $(window).on('swiperight', function(e){
     e.preventDefault();
     if ( e.swipestart.coords[0] <10) {
-      $('#user').panel("open", {
-        overlayTheme: "a",
-        positionTo: "window",
-      });
+      $('#user').panel("open");
     };
   });
 
   $('#user').on('swipeleft', function(e){
     e.preventDefault();
-    $('#user').panel("close", {
-      overlayTheme: "a",
-      positionTo: "window",
-    });
+    $('#user').panel("close");
   });
 });
 
@@ -130,8 +120,8 @@ var setProfile = function(authData){
   var userId = authData.facebook.id;
   var name = authData.facebook.cachedUserProfile.name;
   var photo = authData.facebook.cachedUserProfile.picture.data.url;
-  $('#user h4').text(name);
-  $('#user h2').text('Carma:');
+  $('#user h2').text(name);
+  $('#user h4').text('Carma:');
   $('#user img').attr('src', photo);
   $('#cancel_post').hide();
   $('#cancel_claim').hide();
@@ -207,6 +197,7 @@ var addSpace = function(){
         })
       }
 //---------------replace with a toast notification---------------
+
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(response.latitude,response.longitude),
         map: map,
@@ -276,10 +267,7 @@ var deleteSpace = function(){
     type: 'DELETE'
   }).done(function(){
     $('#cancel_post').hide();
-    $('#user').panel("close", {
-      overlayTheme: "a",
-      positionTo: "window",
-    });
+    $('#user').panel("close");
     var data = {user:{claim: true}};
     $.ajax({
       url: baseUrl + 'users/'+fbData.facebook.id,
@@ -336,10 +324,7 @@ var claimSpace = function(e){
 };
 
 var countdownTimer = function(latitude, longitude){
-  $('#countdown-start').popup("open", {
-    overlayTheme: "a",
-    positionTo: "window",
-  });
+  $('#countdown-start').popup("open");
 
   getLocation().then(function(response){
     var from = response;
@@ -349,10 +334,7 @@ var countdownTimer = function(latitude, longitude){
     setTimeout( function(distance){
       if (distance > 0.4) { //distance in miles
         cancelClaim();
-        $('#countdown-end').popup("open", {
-          overlayTheme: "a",
-          positionTo: "window",
-        });
+        $('#countdown-end').popup("open");
       };
     }, 300000); //5 minutes
   })
@@ -379,10 +361,7 @@ var cancelClaim = function(e){
 //---------------add a toast notification---------------
       directionsDisplay.setMap(null)
       clearMarkers();
-      $('#user').panel("close", {
-        overlayTheme: "a",
-        positionTo: "window",
-      });
+      $('#user').panel("close");
       loadSpaces();
     }).fail(function(){
       alert('could not remove claim');
@@ -437,10 +416,7 @@ var loadSpaces = function(){
 var spaceDetails = function() {
   spaceId = this.id;
   $('#claim').attr('name', spaceId);
-  $('#space-options').popup("open", {
-    overlayTheme: "a",
-    positionTo: "window",
-  });
+  $('#space-options').popup("open");
   $('#note-display').text('Note: ' + this.title);
   // creation = $(this)
   googleCreate = this.creation

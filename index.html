@@ -4,9 +4,13 @@
     <meta charset='utf-8' />
     <title>App</title>
     <meta name="viewport" content="width-device-width, initial-scale-1" />
-    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
+    <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+    <link rel="stylesheet" href="css/blue.min.css" />
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
     <script src="js/fontawesome-markers.min.js"></script>
     <script src="js/jquery-2.1.4.min.js"></script>
     <script charset="utf-8" src="js/ajax.js"></script>
@@ -19,11 +23,11 @@
 </head>
 <body onload="onLoad()">
 
-  <div id="landing-screen" data-role="page">
-    <button id="login">Login</button>
+  <div id="landing-screen" data-role="page" data-theme="a">
+    <button id="login"  data-theme="a">Login</button>
   </div>
 
-  <div id="page-map" data-role="page" data-url="map-page">
+  <div id="page-map" data-role="page" data-url="map-page" data-theme="a">
 
 
     <div data-role="popup" id="post-space">
@@ -62,8 +66,9 @@
     <header data-role="header">
       <button id="profile">Profile</button>
       <h3>Halle</h3>
-      <button id="create-space">List Opening</button>
     </header>
+
+    <button id="create-space">List Opening</button>
 
     <div id="content" data-role="content">
       <div id="map-canvas"></div>
@@ -73,9 +78,11 @@
 
     <div id="user" data-role="panel" data-position="left" data-display="overlay">
       <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-      <img/>
-      <h4></h4>
+      <div class="round">
+        <img />
+      </div>
       <h2></h2>
+      <h4></h4>
       <button id="cancel_post">Cancel recent post</button>
       <button id="cancel_claim">Cancel recent claim</button>
       <button id="logout">Logout</button>
@@ -87,7 +94,7 @@
       <textarea id="pac-input" placeholder="Search Box"></textarea>
     </div>
   </div>
-  <div data-role="footer" data-position="fixed">
+  <div data-role="footer" data-position="fixed" data-theme="a">
   <a href="#" data-rel="back">OK</a>
   </div>
 </body>
