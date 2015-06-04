@@ -12,6 +12,8 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 
     fbAuth().then(function(authData){
       fbData = authData;
+      var fbString = JSON.stringify(authData);
+      window.localStorage.setItem("fbData", fbString);
       ajaxLogin(authData);
       setProfile(authData);
     });
