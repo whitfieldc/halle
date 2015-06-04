@@ -48,7 +48,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     console.log("claim is working");
     e.preventDefault();
     claimSpace(e);
-    countdownTimer(e);
   });
 
   $('#center').on('click', function(e){
@@ -135,8 +134,8 @@ var ajaxLogin = function(authData){
   userId = authData.facebook.id;
   var ajaxData = {user:{oauth_id:userId}};
   $.ajax({
-    url: 'http://calm-island-3256.herokuapp.com/users/'+userId+'/identify',
-    // url: 'http://localhost:3000/users/'+userId+'/identify',
+    // url: 'http://calm-island-3256.herokuapp.com/users/'+userId+'/identify',
+    url: 'http://localhost:3000/users/'+userId+'/identify',
     type: 'GET',
     data: ajaxData
   }).done(function(response) {
@@ -187,8 +186,8 @@ var addSpace = function(){
     var headers   = '{"Content-Type":"application/json"}';
 
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com/spaces',
-      // url: 'http://localhost:3000/spaces',
+      // url: 'http://calm-island-3256.herokuapp.com/spaces',
+      url: 'http://localhost:3000/spaces',
       type: "POST",
       data: data,
       headers: headers
@@ -211,6 +210,8 @@ var addSpace = function(){
         zIndex: google.maps.Marker.MAX_ZINDEX + 1,
         draggable: true
       });
+
+      userData.recentPost = response.id
 // IN BETA -------------------------------------------------------------------
       google.maps.event.addListener(marker, 'click', spaceDetails);
       google.maps.event.addListener(marker, "dragend", function() {
@@ -220,23 +221,34 @@ var addSpace = function(){
         geocoder = new google.maps.Geocoder();
         geocoder.geocode({latLng: pos}, function(results, status){
           if (status == google.maps.GeocoderStatus.OK) {
+            var spaceId = userData.recentPost;
             debugger
-            console.log(results[0].formatted_address);
+            var headers = '{"Content-Type":"application/json"}';
+            var latitude = results[0].geometry.location.A;
+            var longitude = results[0].geometry.location.F;
+            var data = {space:{latitude: latitude, longitude: longitude}};
+            $.ajax({
+              // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+              url: 'http://localhost:3000/spaces/'+spaceId,
+              type: 'PUT',
+              headers: headers,
+              data: data
+            }).done(function(){console.log('space location updated')
+            }).fail(function(){console.log('space location could not be updated')})
           }else{
-            console.log('Cannot determine new location.');
+            console.log('Cannot determine new location. Status:'+status);
           };
         });
       };
 // IN BETA -------------------------------------------------------------------
       var data = {user:{post: true}};
       $.ajax({
-        // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+        url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
         url: 'http://localhost:3000/users/'+fbData.facebook.id,
         type: 'PUT',
         data: data
       }).done(function(response){
         $('#cancel_post').show();
-        userData.recentPost = response.id //needs to go in second .done after merge
         consumeCheck(response.can_consume);
       }).fail(function(response){
         console.log('failed to add space')
@@ -251,7 +263,7 @@ var addSpace = function(){
 var deleteSpace = function(){
   var spaceId = userData.recentPost;
   $.ajax({
-    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
     url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'DELETE'
   }).done(function(){
@@ -259,7 +271,7 @@ var deleteSpace = function(){
     var data = {user:{claim: true}};
     $.ajax({
       url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     });
@@ -273,16 +285,17 @@ var deleteSpace = function(){
 var claimSpace = function(e){
   var spaceId = e.target.name
   var headers = '{"Content-Type":"application/json"}';
+  var spaceInfo
   $.ajax({
-    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-    // url: 'http://localhost:3000/spaces/'+spaceId,
+    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
     headers: headers
   }).done(function(response) {
     var data = {user:{consume: true}};
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     }).done(function(response){
@@ -303,52 +316,49 @@ var claimSpace = function(e){
     var destination = response.latitude +","+ response.longitude;
     clearMarkers();
     calcRoute(destination, map);
+    countdownTimer(response.latitude, response.longitude);
   }).fail(function(response) {
     console.log("claim space ajax call failed");
 //---------------replace with a toast notification---------------
   });
 };
 
-var countdownTimer = function(e){
-  console.log(e);
-  var spaceId = e.currentTarget.name
-  // ajax call to find space lat/long?
+var countdownTimer = function(latitude, longitude){
   $('#countdown-start').popup("open", {
     overlayTheme: "a",
     positionTo: "window",
   });
-  setTimeout( function(){
 
+  getLocation().then(function(response){
+    var from = response;
+    var to = new google.maps.LatLng(latitude, longitude);
+    var distance = google.maps.geometry.spherical.computeDistanceBetween(from, to);
 
-    var from = new google.maps.LatLng(49.004, 8.456); //userData.recentClaim location
-    var to = new google.maps.LatLng(49.321, 8.789); //claimed space location
-    var dist = google.maps.geometry.spherical.computeDistanceBetween(from, to);
-
-
-    var from = new google.maps.LatLng(49.004, 8.456); var to = new google.maps.LatLng(49.321, 8.789); var dist = google.maps.geometry.spherical.computeDistanceBetween(from, to);
-    //if (user is outside certain radius) {
-      deleteClaim();
-      $('#countdown-end').popup("open", {
-        overlayTheme: "a",
-        positionTo: "window",
-      });
-    // }
-  }, 3000);
+    setTimeout( function(distance){
+      if (distance > 644) { //distance in meters
+        cancelClaim();
+        $('#countdown-end').popup("open", {
+          overlayTheme: "a",
+          positionTo: "window",
+        });
+      };
+    }, 300000); //5 minutes
+  })
 };
 
 var cancelClaim = function(e){
   var spaceId = userData.recentClaim;
   var headers = '{"Content-Type":"application/json"}';
   $.ajax({
-    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-    // url: 'http://localhost:3000/spaces/'+spaceId,
+    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
     headers: headers
   }).done(function(response) {
     var data = {user:{post: true}};
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     }).done(function(){
@@ -388,8 +398,8 @@ var calcRoute = function(finalDestination, map) {
 
 var loadSpaces = function(){
   $.ajax({
-    url: 'http://calm-island-3256.herokuapp.com',
-    // url: 'http://localhost:3000',
+    // url: 'http://calm-island-3256.herokuapp.com',
+    url: 'http://localhost:3000',
     type: "GET",
   }).done(function(response){
     parkingSpots = response
