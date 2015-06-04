@@ -80,6 +80,12 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     centerMap(map);
   });
 
+  $('#search-area').hide();
+
+  $('#page-map').on('click', '#search', function(e){
+    $('#search-area').show();
+  })
+
   var input = (document.getElementById('pac-input'));
   var searchBox = new google.maps.places.SearchBox((input));
 
