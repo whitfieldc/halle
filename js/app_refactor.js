@@ -17,7 +17,6 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 });
 
 $(document).on("pagecreate", "#page-map", function(e, data){
-  onLoad();
   var directionsDisplay;
   markerArray = [];
   var mapOptions = {
@@ -443,10 +442,12 @@ var clearMarkers = function() {
 };
 
 var onLoad = function() {
+  // alert('load')
   document.addEventListener("deviceready", onDeviceReady, false);
 };
 
 var onDeviceReady = function() {
+  // alert('ready')
   bindPause();
   bindResume();
 };
@@ -456,6 +457,7 @@ var bindPause = function() {
 };
 
 var onPause = function(){
+  alert('pause')
   Firebase.goOffline();
 };
 
