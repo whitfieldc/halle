@@ -12,6 +12,8 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 
     fbAuth().then(function(authData){
       fbData = authData;
+      var fbString = JSON.stringify(authData);
+      window.localStorage.setItem("fbData", fbString);
       ajaxLogin(authData);
       setProfile(authData);
     });
@@ -38,12 +40,11 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
-    console.log("OMG")
+    // console.log("OMG")
     $('#post-space').popup("open", {
       overlayTheme: "a",
       positionTo: "window",
     });
-    // debugger;
     $('#add-space').on('click', function(e){
       e.preventDefault();
       addSpace(e);
@@ -214,7 +215,7 @@ var addSpace = function(){
         zIndex: google.maps.Marker.MAX_ZINDEX + 1,
         draggable: true
       });
-
+      console.log(response);
       userData.recentPost = response.id;
 
       google.maps.event.addListener(marker, 'click', spaceDetails);
@@ -229,8 +230,8 @@ var addSpace = function(){
         data: data
       }).done(function(response){
         $('#cancel_post').show();
-        userData.recentPost = response.id //needs to go in second .done after merge
-        console.log(response);
+        // userData.recentPost = response.id //needs to go in second .done after merge
+        // console.log(response);
         consumeCheckAdd(response.can_consume);
         // consumeCheck.off();
       }).fail(function(response){
@@ -248,7 +249,6 @@ var geocodePosition = function(pos){
   geocoder.geocode({latLng: pos}, function(results, status){
     if (status == google.maps.GeocoderStatus.OK) {
       var spaceId = userData.recentPost;
-      debugger
       var headers = '{"Content-Type":"application/json"}';
       var latitude = results[0].geometry.location.A;
       var longitude = results[0].geometry.location.F;
@@ -358,16 +358,18 @@ var countdownTimer = function(latitude, longitude){
 var cancelClaim = function(e){
   var spaceId = userData.recentClaim;
   var headers = '{"Content-Type":"application/json"}';
+  var data = {space:{change_location: false}};
   $.ajax({
     url: baseUrl + 'spaces/'+spaceId,
     type: 'PUT',
-    headers: headers
+    headers: headers,
+    data: data
   }).done(function(response) {
-    var data = {user:{post: true}};
+    var userData = {user:{post: true}};
     $.ajax({
       url: baseUrl + 'users/'+fbData.facebook.id,
       type: 'PUT',
-      data: data
+      data: userData
     }).done(function(){
       $('#cancel_claim').hide();
       // clear countdown function
@@ -440,7 +442,7 @@ var spaceDetails = function() {
   // creation = $(this)
   googleCreate = this.creation
   min = Math.floor((Date.now() - googleCreate) / 60000);
-  console.log(min)
+  // console.log(min)
   $('#time-display').text('Posted: ' + min + ' minutes ago');
 };
 
@@ -457,20 +459,24 @@ var liveDrop = function(childSnapshot, prevChildName){
   var newChild = childSnapshot.val();
   var newChildKey = Object.keys(newChild)[0];
   var spaceObj = JSON.parse(newChild[newChildKey]);
-
-  var marker = new google.maps.Marker({
-    position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
-    map: map,
-    animation: google.maps.Animation.DROP,
-    title:  spaceObj.note,
-    icon: markerSelect(spaceObj), //set marker according to age
-    id: spaceObj.id,
-    creation: spaceObj.converted_time
-  });
-  markerArray.push(marker)
-  google.maps.event.addListener(marker, 'click', spaceDetails);
+  // console.log(spaceObj.poster_id);
+  // console.log(userData.id);
+  if (spaceObj.poster_id != userData.id){
+    // console.log('this shouldnt happen');
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
+      map: map,
+      animation: google.maps.Animation.DROP,
+      title:  spaceObj.note,
+      icon: markerSelect(spaceObj), //set marker according to age
+      id: spaceObj.id,
+      creation: spaceObj.converted_time
+    });
+    markerArray.push(marker)
+    google.maps.event.addListener(marker, 'click', spaceDetails);
+  }
   console.log("Hit firebase");
-  console.log(prevChildName)
+  // console.log(prevChildName)
 }
 
 //Search
@@ -510,6 +516,7 @@ var consumeCheckAdd = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
     loadSpaces();
+    console.log('carma fucking us again')
     console.log('can_consume = true')
   } else {
     console.log('can_consume = false')
