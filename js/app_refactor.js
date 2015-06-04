@@ -1,8 +1,8 @@
 var ref = new Firebase("https://halle.firebaseio.com");
 var fbData;
 var userData;
-var baseUrl = 'http://localhost:3000/'
-// var baseUrl = 'http://calm-island-3256.herokuapp.com/'
+// var baseUrl = 'http://localhost:3000/'
+var baseUrl = 'http://calm-island-3256.herokuapp.com/'
 
 
 $(document).on("pagecreate", "#landing-screen", function(e, data){
@@ -40,7 +40,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
-    console.log("OMG")
+    // console.log("OMG")
     $('#post-space').popup("open", {
       overlayTheme: "a",
       positionTo: "window",
@@ -459,20 +459,24 @@ var liveDrop = function(childSnapshot, prevChildName){
   var newChild = childSnapshot.val();
   var newChildKey = Object.keys(newChild)[0];
   var spaceObj = JSON.parse(newChild[newChildKey]);
-
-  var marker = new google.maps.Marker({
-    position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
-    map: map,
-    animation: google.maps.Animation.DROP,
-    title:  spaceObj.note,
-    icon: markerSelect(spaceObj), //set marker according to age
-    id: spaceObj.id,
-    creation: spaceObj.converted_time
-  });
-  markerArray.push(marker)
-  google.maps.event.addListener(marker, 'click', spaceDetails);
+  console.log(spaceObj.poster_id);
+  console.log(userData.id);
+  if (spaceObj.poster_id != userData.id){
+    console.log('this shouldnt happen');
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
+      map: map,
+      animation: google.maps.Animation.DROP,
+      title:  spaceObj.note,
+      icon: markerSelect(spaceObj), //set marker according to age
+      id: spaceObj.id,
+      creation: spaceObj.converted_time
+    });
+    markerArray.push(marker)
+    google.maps.event.addListener(marker, 'click', spaceDetails);
+  }
   console.log("Hit firebase");
-  console.log(prevChildName)
+  // console.log(prevChildName)
 }
 
 //Search
@@ -512,6 +516,7 @@ var consumeCheckAdd = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
     loadSpaces();
+    console.log('carma fucking us again')
     console.log('can_consume = true')
   } else {
     console.log('can_consume = false')
