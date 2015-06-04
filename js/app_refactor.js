@@ -45,9 +45,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
       overlayTheme: "a",
       positionTo: "window",
     });
-    // debugger;
     $('#add-space').on('click', function(e){
-      debugger;
       e.preventDefault();
       addSpace(e);
     });
@@ -217,7 +215,7 @@ var addSpace = function(){
         zIndex: google.maps.Marker.MAX_ZINDEX + 1,
         draggable: true
       });
-
+      console.log(response);
       userData.recentPost = response.id;
 
       google.maps.event.addListener(marker, 'click', spaceDetails);
@@ -232,8 +230,8 @@ var addSpace = function(){
         data: data
       }).done(function(response){
         $('#cancel_post').show();
-        userData.recentPost = response.id //needs to go in second .done after merge
-        console.log(response);
+        // userData.recentPost = response.id //needs to go in second .done after merge
+        // console.log(response);
         consumeCheckAdd(response.can_consume);
         // consumeCheck.off();
       }).fail(function(response){
@@ -251,7 +249,6 @@ var geocodePosition = function(pos){
   geocoder.geocode({latLng: pos}, function(results, status){
     if (status == google.maps.GeocoderStatus.OK) {
       var spaceId = userData.recentPost;
-      debugger
       var headers = '{"Content-Type":"application/json"}';
       var latitude = results[0].geometry.location.A;
       var longitude = results[0].geometry.location.F;
@@ -445,7 +442,7 @@ var spaceDetails = function() {
   // creation = $(this)
   googleCreate = this.creation
   min = Math.floor((Date.now() - googleCreate) / 60000);
-  console.log(min)
+  // console.log(min)
   $('#time-display').text('Posted: ' + min + ' minutes ago');
 };
 
