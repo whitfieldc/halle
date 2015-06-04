@@ -41,10 +41,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
     console.log("OMG")
-    $('#post-space').popup("open", {
-      overlayTheme: "a",
-      positionTo: "window",
-    });
+    $('#post-space').popup("open");
     // debugger;
     $('#add-space').on('click', function(e){
       debugger;
@@ -67,10 +64,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on('click', '#profile', function(e){
     e.preventDefault();
-    $('#user').panel("open", {
-      overlayTheme: "a",
-      positionTo: "window",
-    });
+    $('#user').panel("open");
   });
 
   $('#page-map').on('click', '#cancel_post', function(e){
@@ -88,7 +82,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   var input = (document.getElementById('pac-input'));
   var searchBox = new google.maps.places.SearchBox((input));
 
-  map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
   google.maps.event.addListener(searchBox, 'places_changed', function(){
     localSearch(searchBox)
   });
@@ -96,19 +89,13 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   $(window).on('swiperight', function(e){
     e.preventDefault();
     if ( e.swipestart.coords[0] <10) {
-      $('#user').panel("open", {
-        overlayTheme: "a",
-        positionTo: "window",
-      });
+      $('#user').panel("open");
     };
   });
 
   $('#user').on('swipeleft', function(e){
     e.preventDefault();
-    $('#user').panel("close", {
-      overlayTheme: "a",
-      positionTo: "window",
-    });
+    $('#user').panel("close");
   });
 });
 
@@ -206,6 +193,7 @@ var addSpace = function(){
         $('#post-space').popup('close');
       }, 1500);
 //---------------replace with a toast notification---------------
+
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(response.latitude,response.longitude),
         map: map,
@@ -276,10 +264,7 @@ var deleteSpace = function(){
     type: 'DELETE'
   }).done(function(){
     $('#cancel_post').hide();
-    $('#user').panel("close", {
-      overlayTheme: "a",
-      positionTo: "window",
-    });
+    $('#user').panel("close");
     var data = {user:{claim: true}};
     $.ajax({
       url: baseUrl + 'users/'+fbData.facebook.id,
@@ -336,10 +321,7 @@ var claimSpace = function(e){
 };
 
 var countdownTimer = function(latitude, longitude){
-  $('#countdown-start').popup("open", {
-    overlayTheme: "a",
-    positionTo: "window",
-  });
+  $('#countdown-start').popup("open");
 
   getLocation().then(function(response){
     var from = response;
@@ -349,10 +331,7 @@ var countdownTimer = function(latitude, longitude){
     setTimeout( function(distance){
       if (distance > 644) { //distance in meters
         cancelClaim();
-        $('#countdown-end').popup("open", {
-          overlayTheme: "a",
-          positionTo: "window",
-        });
+        $('#countdown-end').popup("open");
       };
     }, 300000); //5 minutes
   })
@@ -377,10 +356,7 @@ var cancelClaim = function(e){
 //---------------add a toast notification---------------
       directionsDisplay.setMap(null)
       clearMarkers();
-      $('#user').panel("close", {
-        overlayTheme: "a",
-        positionTo: "window",
-      });
+      $('#user').panel("close");
       loadSpaces();
     }).fail(function(){
       alert('could not remove claim');
@@ -435,10 +411,7 @@ var loadSpaces = function(){
 var spaceDetails = function() {
   spaceId = this.id;
   $('#claim').attr('name', spaceId);
-  $('#space-options').popup("open", {
-    overlayTheme: "a",
-    positionTo: "window",
-  });
+  $('#space-options').popup("open");
   $('#note-display').text('Note: ' + this.title);
   // creation = $(this)
   googleCreate = this.creation
