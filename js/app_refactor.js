@@ -45,7 +45,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     });
     // debugger;
     $('#add-space').on('click', function(e){
-      debugger;
       e.preventDefault();
       addSpace(e);
     });
@@ -65,6 +64,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on('click', '#profile', function(e){
     e.preventDefault();
+    closestSpace();
     $('#user').panel("open", {
       overlayTheme: "a",
       positionTo: "window",
@@ -613,4 +613,28 @@ var openSpace = {
   strokeOpacity: 1,
   fillColor: 'black',
   fillOpacity: 1
+}
+
+var closestSpace = function(){
+  // var closeArray = [ ]
+  var closest = markerArray[0].position;
+  var distance;
+  getLocation().then(function(currentLocation){
+    var from = currentLocation
+    for(var i = 1; i < markerArray.length; i++){
+      // if(getDistance(currentLocation,markerArray[i].position) < 805)
+      if(getDistance(currentLocation, markerArray[i].position) < getDistance(currentLocation, closest)){
+        closest = markerArray[i].position
+      };
+    };
+  var distance = getDistance(currentLocation, closest);
+  distance = (distance * 0.00062137)
+  alert("Closest Space is "+distance+" miles away.")
+  return closest;
+  });
+};
+
+var getDistance = function(to, from){
+  var dist = google.maps.geometry.spherical.computeDistanceBetween(from, to);
+  return dist
 }
