@@ -237,6 +237,10 @@ var deleteSpace = function(e){
     type: 'DELETE'
   }).done(function(){
     $('#cancel_post').hide();
+    $('#user').panel("close", {
+      overlayTheme: "a",
+      positionTo: "window",
+    });
     var data = {user:{claim: true}};
     $.ajax({
       url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
@@ -306,6 +310,10 @@ var cancelClaim = function(e){
       $('#cancel_claim').hide();
       directionsDisplay.setMap(null)
       clearMarkers();
+      $('#user').panel("close", {
+        overlayTheme: "a",
+        positionTo: "window",
+      });
       loadSpaces();
     }).fail(function(){
       alert('could not remove claim');
