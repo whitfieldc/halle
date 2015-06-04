@@ -2,6 +2,7 @@ var ref = new Firebase("https://halle.firebaseio.com");
 var fbData;
 var userData;
 
+
 $(document).on("pagecreate", "#landing-screen", function(e, data){
 
   $('#login').on('click', function(e){
@@ -17,7 +18,7 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 
 $(document).on("pagecreate", "#page-map", function(e, data){
   var directionsDisplay;
-  markerArray = []
+  markerArray = [];
   var mapOptions = {
     zoom: 13,
     disableDefaultUI: true,
@@ -29,29 +30,31 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   markCenter(map);
   consumeCheck(userData.can_consume);
 
-  $('#create-space').on('click', function(e){
+  $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
+    console.log("OMG")
     $('#post-space').popup("open", {
       overlayTheme: "a",
       positionTo: "window",
     });
     $('#add-space').on('click', function(e){
+      e.preventDefault();
       addSpace(e);
     });
   });
 
-  $('#claim').on('click', function(e){
+  $('#page-map').on('click', '#claim', function(e){
     console.log("claim is working")
     e.preventDefault();
     claimSpace(e);
   });
 
-  $('#center').on('click', function(e){
+  $('#page-map').on('click', '#center', function(e){
     e.preventDefault();
     centerMap(map);
   });
 
-  $('#profile').on('click', function(e){
+  $('#page-map').on('click', '#profile', function(e){
     e.preventDefault();
     $('#user').panel("open", {
       overlayTheme: "a",
@@ -59,26 +62,25 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     });
   });
 
-  $('#cancel_post').on('click', function(e){
+  $('#page-map').on('click', '#cancel_post', function(e){
     e.preventDefault();
     deleteSpace();
   });
 
-  $('#cancel_claim').on('click', function(e){
+  $('#page-map').on('click', '#cancel_claim', function(e){
     e.preventDefault();
     cancelClaim();
     // clear overlay?
     centerMap(map);
   });
 
-//___________________________________________
   var input = (document.getElementById('pac-input'));
   var searchBox = new google.maps.places.SearchBox((input));
 
   map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(input);
   google.maps.event.addListener(searchBox, 'places_changed', function(){
     localSearch(searchBox)
-  }); //______________________________________
+  });
 
   $(window).on('swiperight', function(e){
     e.preventDefault();
@@ -206,7 +208,8 @@ var addSpace = function(e){
         $('#cancel_post').show();
         userData.recentPost = response.id //needs to go in second .done after merge
         console.log(response);
-        consumeCheck(response.can_consume);
+        consumeCheckAdd(response.can_consume);
+        // consumeCheck.off();
       }).fail(function(response){
         console.log('fail posting')
       });
@@ -220,7 +223,6 @@ var addSpace = function(e){
       //   animation: google.maps.Animation.DROP,
       //   zIndex: google.maps.Marker.MAX_ZINDEX + 1
       // });
-      console.log("Console Log")
     }).fail(function(response) {
       alert("Could not create space");
     });
@@ -235,6 +237,10 @@ var deleteSpace = function(e){
     type: 'DELETE'
   }).done(function(){
     $('#cancel_post').hide();
+    $('#user').panel("close", {
+      overlayTheme: "a",
+      positionTo: "window",
+    });
     var data = {user:{claim: true}};
     $.ajax({
       url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
@@ -303,6 +309,11 @@ var cancelClaim = function(e){
     }).done(function(){
       $('#cancel_claim').hide();
       directionsDisplay.setMap(null)
+      clearMarkers();
+      $('#user').panel("close", {
+        overlayTheme: "a",
+        positionTo: "window",
+      });
       loadSpaces();
     }).fail(function(){
       alert('could not remove claim');
@@ -421,22 +432,63 @@ var localSearch = function(searchObject){
 var consumeCheck = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
-      loadSpaces();
-      ref.on('child_added', function(childSnapshot, prevChildName){
-        liveDrop(childSnapshot, prevChildName);
+    loadSpaces();
+    ref.on('child_added', function(childSnapshot, prevChildName){
+      liveDrop(childSnapshot, prevChildName);
     });
-    console.log('shits true')
+    console.log('can_consume = true')
   } else {
-    console.log("shits false")
+    console.log('can_consume = false')
+  };
+};
+
+var consumeCheckAdd = function(can_consume){
+  if (can_consume === true){
+    $('#carma-false').hide();
+    loadSpaces();
+    console.log('can_consume = true')
+  } else {
+    console.log('can_consume = false')
   };
 };
 
 var clearMarkers = function() {
   for (var i = 0; i < markerArray.length; i++ ) {
     markerArray[i].setMap(null);
-  }
-  markerArray.length = 0;
-}
+  };
+  markerArray = [];
+};
+
+var onLoad = function() {
+  // alert('load')
+  document.addEventListener("deviceready", onDeviceReady, false);
+};
+
+var onDeviceReady = function() {
+  // alert('ready')
+  bindPause();
+  bindResume();
+};
+
+var bindPause = function() {
+  document.addEventListener('pause', onPause, false);
+};
+
+var onPause = function(){
+  // alert('pause')
+  Firebase.goOffline();
+};
+
+var bindResume = function(){
+  document.addEventListener('resume', onResume, false);
+};
+
+var onResume = function(){
+  clearMarkers();
+  Firebase.goOnline();
+  loadSpaces();
+  // alert("resume works")
+};
 
 // Map format???
   // $(".ui-content", this).css({
