@@ -83,7 +83,14 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   $('#search-area').hide();
 
   $('#page-map').on('click', '#search', function(e){
-    $('#search-area').show();
+    console.log($('#search-area').attr('name'));
+    if($('#search-area').attr('name') === 'false') {
+      $('#search-area').show();
+      $('#search-area').attr('name','true');
+    } else {
+      $('#search-area').hide();
+      $('#search-area').attr('name','false');
+    };
   })
 
   var input = (document.getElementById('pac-input'));
