@@ -204,7 +204,6 @@ var addSpace = function(){
           setTimeout(function () {
             $('#post-space-confirmation').popup('close');
           }, 1500);
-          onloadpopupOpen();
         })
       }
 //---------------replace with a toast notification---------------
