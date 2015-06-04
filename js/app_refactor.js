@@ -137,8 +137,8 @@ var ajaxLogin = function(authData){
   userId = authData.facebook.id;
   var ajaxData = {user:{oauth_id:userId}};
   $.ajax({
-    url: 'http://calm-island-3256.herokuapp.com/users/'+userId+'/identify',
-    // url: 'http://localhost:3000/users/'+userId+'/identify',
+    // url: 'http://calm-island-3256.herokuapp.com/users/'+userId+'/identify',
+    url: 'http://localhost:3000/users/'+userId+'/identify',
     type: 'GET',
     data: ajaxData
   }).done(function(response) {
@@ -189,8 +189,8 @@ var addSpace = function(){
     var headers   = '{"Content-Type":"application/json"}';
 
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com/spaces',
-      // url: 'http://localhost:3000/spaces',
+      // url: 'http://calm-island-3256.herokuapp.com/spaces',
+      url: 'http://localhost:3000/spaces',
       type: "POST",
       data: data,
       headers: headers
@@ -223,8 +223,8 @@ var addSpace = function(){
 
       var data = {user:{post: true}};
       $.ajax({
-        url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-        // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+        // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+        url: 'http://localhost:3000/users/'+fbData.facebook.id,
         type: 'PUT',
         data: data
       }).done(function(response){
@@ -252,10 +252,10 @@ var geocodePosition = function(pos){
       var headers = '{"Content-Type":"application/json"}';
       var latitude = results[0].geometry.location.A;
       var longitude = results[0].geometry.location.F;
-      var data = {space:{latitude: latitude, longitude: longitude}};
+      var data = {space:{latitude: latitude, longitude: longitude, change_location: true}};
       $.ajax({
-        url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-        // url: 'http://localhost:3000/spaces/'+spaceId,
+        // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+        url: 'http://localhost:3000/spaces/'+spaceId,
         type: 'PUT',
         headers: headers,
         data: data
@@ -270,8 +270,8 @@ var geocodePosition = function(pos){
 var deleteSpace = function(){
   var spaceId = userData.recentPost;
   $.ajax({
-    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-    // url: 'http://localhost:3000/spaces/'+spaceId,
+    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'DELETE'
   }).done(function(){
     $('#cancel_post').hide();
@@ -281,8 +281,8 @@ var deleteSpace = function(){
     });
     var data = {user:{claim: true}};
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     });
@@ -297,16 +297,18 @@ var claimSpace = function(e){
   var spaceId = e.target.name
   var headers = '{"Content-Type":"application/json"}';
   var spaceInfo
+  var data = {space:{change_location: false}};
   $.ajax({
-    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-    // url: 'http://localhost:3000/spaces/'+spaceId,
+    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
-    headers: headers
+    headers: headers,
+    data: data
   }).done(function(response) {
     var data = {user:{consume: true}};
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     }).done(function(response){
@@ -324,6 +326,7 @@ var claimSpace = function(e){
     }).fail(function(response){
       console.log('claim space user update failed');
     });
+    console.log(response)
     var destination = response.latitude +","+ response.longitude;
     clearMarkers();
     calcRoute(destination, map);
@@ -361,15 +364,15 @@ var cancelClaim = function(e){
   var spaceId = userData.recentClaim;
   var headers = '{"Content-Type":"application/json"}';
   $.ajax({
-    url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
-    // url: 'http://localhost:3000/spaces/'+spaceId,
+    // url: 'http://calm-island-3256.herokuapp.com/spaces/'+spaceId,
+    url: 'http://localhost:3000/spaces/'+spaceId,
     type: 'PUT',
     headers: headers
   }).done(function(response) {
     var data = {user:{post: true}};
     $.ajax({
-      url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
-      // url: 'http://localhost:3000/users/'+fbData.facebook.id,
+      // url: 'http://calm-island-3256.herokuapp.com/users/'+fbData.facebook.id,
+      url: 'http://localhost:3000/users/'+fbData.facebook.id,
       type: 'PUT',
       data: data
     }).done(function(){
@@ -414,8 +417,8 @@ var calcRoute = function(finalDestination, map) {
 
 var loadSpaces = function(){
   $.ajax({
-    url: 'http://calm-island-3256.herokuapp.com',
-    // url: 'http://localhost:3000',
+    // url: 'http://calm-island-3256.herokuapp.com',
+    url: 'http://localhost:3000',
     type: "GET",
   }).done(function(response){
     parkingSpots = response
@@ -560,10 +563,10 @@ var onResume = function(){
 };
 
 // Map format???
-  // $(".ui-content", this).css({
-   // height: $(window).height(),
-   // width: $(window).width()
-// });
+$(".ui-content", this).css({
+ height: $(window).height(),
+ width: $(window).width()
+});
 
 // Space markers CSS -----------------------------------------
 var currentLocation = {
