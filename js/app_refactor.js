@@ -64,7 +64,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on('click', '#profile', function(e){
     e.preventDefault();
-    closestSpace();
     $('#user').panel("open", {
       overlayTheme: "a",
       positionTo: "window",
@@ -342,10 +341,10 @@ var countdownTimer = function(latitude, longitude){
   getLocation().then(function(response){
     var from = response;
     var to = new google.maps.LatLng(latitude, longitude);
-    var distance = google.maps.geometry.spherical.computeDistanceBetween(from, to);
+    var distance = getDistance(to, from);
 
     setTimeout( function(distance){
-      if (distance > 644) { //distance in meters
+      if (distance > 0.4) { //distance in miles
         cancelClaim();
         $('#countdown-end').popup("open", {
           overlayTheme: "a",
@@ -403,12 +402,6 @@ var calcRoute = function(finalDestination, map) {
     directionsService.route(request, function(response, status) {
       if (status == google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
-
-        var from = currentLocation;
-        var to   = finalDestination;
-        var dist = google.maps.geometry.spherical.computeDistanceBetween(from, to);
-        alert(dist);
-        debugger;
       }
       else{alert("Server Error: Directions Unavailable")}
     });
@@ -567,6 +560,50 @@ $(".ui-content", this).css({
  width: $(window).width()
 });
 
+// Distance Calculations
+var closestSpace = function(){
+  var closest = markerArray[0].position;
+  var distance;
+  getLocation().then(function(currentLocation){
+    var from = currentLocation
+    for(var i = 1; i < markerArray.length; i++){
+      if(getDistance(currentLocation, markerArray[i].position) < getDistance(currentLocation, closest)){
+        closest = markerArray[i].position
+      };
+    };
+  var distance = getDistance(currentLocation, closest);
+  if (distance >= 1){
+    alert("Closest Space is "+distance+" miles away.")
+  }
+  else {
+    distance *= 5280
+    alert("Closest Space is "+distance+" feet away.")
+  }
+  return closest;
+  });
+};
+
+var closestSpaceList = function(radius){
+  var closestArray = [ ]
+  getLocation().then(function(currentLocation){
+    for(var i = 1; i < markerArray.length; i++){
+      if(getDistance(currentLocation, markerArray[i].position) <= radius) {
+        closestArray.push(markerArray[i])
+      };
+    };
+  debugger;
+  return closestArray; // Call .length to get the number of spaces, OBVI
+  });
+};
+
+var getDistance = function(to, from){
+  var dist = google.maps.geometry.spherical.computeDistanceBetween(to, from);
+  dist *= 0.00062137 // return distance in miles
+  dist = Math.round(1000.0*dist)/1000.0; //round to nearest 100th of a mile
+  console.log(dist)
+  return dist
+}
+
 // Space markers CSS -----------------------------------------
 var currentLocation = {
   path: fontawesome.markers.LOCATION_ARROW,
@@ -613,28 +650,4 @@ var openSpace = {
   strokeOpacity: 1,
   fillColor: 'black',
   fillOpacity: 1
-}
-
-var closestSpace = function(){
-  // var closeArray = [ ]
-  var closest = markerArray[0].position;
-  var distance;
-  getLocation().then(function(currentLocation){
-    var from = currentLocation
-    for(var i = 1; i < markerArray.length; i++){
-      // if(getDistance(currentLocation,markerArray[i].position) < 805)
-      if(getDistance(currentLocation, markerArray[i].position) < getDistance(currentLocation, closest)){
-        closest = markerArray[i].position
-      };
-    };
-  var distance = getDistance(currentLocation, closest);
-  distance = (distance * 0.00062137)
-  alert("Closest Space is "+distance+" miles away.")
-  return closest;
-  });
-};
-
-var getDistance = function(to, from){
-  var dist = google.maps.geometry.spherical.computeDistanceBetween(from, to);
-  return dist
 }
