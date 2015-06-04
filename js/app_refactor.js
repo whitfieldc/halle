@@ -17,8 +17,9 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 });
 
 $(document).on("pagecreate", "#page-map", function(e, data){
+  onLoad();
   var directionsDisplay;
-  markerArray = []
+  markerArray = [];
   var mapOptions = {
     zoom: 13,
     disableDefaultUI: true,
