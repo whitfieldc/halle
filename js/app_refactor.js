@@ -71,6 +71,8 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     centerMap(map);
   });
 
+
+
 //___________________________________________
   var input = (document.getElementById('pac-input'));
   var searchBox = new google.maps.places.SearchBox((input));
@@ -326,6 +328,12 @@ var calcRoute = function(finalDestination, map) {
     directionsService.route(request, function(response, status) {
       if (status == google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
+
+        var from = currentLocation;
+        var to   = finalDestination;
+        var dist = google.maps.geometry.spherical.computeDistanceBetween(from, to);
+        alert(dist);
+        debugger;
       }
       else{alert("Server Error: Directions Unavailable")}
     });
