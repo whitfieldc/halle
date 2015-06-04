@@ -197,7 +197,6 @@ var addSpace = function(){
       data: data,
       headers: headers
     }).done(function(response) {
-      debugger
       $('#post-space').popup('close');
       if ($(':input','#post-space').val().length > 1) {
         $("#post-space").on("popupafterclose", function () {
