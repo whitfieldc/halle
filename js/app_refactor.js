@@ -1,8 +1,8 @@
 var ref = new Firebase("https://halle.firebaseio.com");
 var fbData;
 var userData;
-var baseUrl = 'http://localhost:3000/'
-// var baseUrl = 'http://calm-island-3256.herokuapp.com/'
+// var baseUrl = 'http://localhost:3000/'
+var baseUrl = 'http://calm-island-3256.herokuapp.com/'
 
 
 $(document).on("pagecreate", "#landing-screen", function(e, data){
@@ -40,7 +40,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
-    console.log("OMG")
+    $(':input','#post-space').val('');
     $('#post-space').popup("open", {
       overlayTheme: "a",
       positionTo: "window",
@@ -197,12 +197,14 @@ var addSpace = function(){
       data: data,
       headers: headers
     }).done(function(response) {
-      $('#add-space').remove();
-      $('#note').remove();
-      $('#popup-par').text('Added √');
-      setTimeout(function () {
-        $('#post-space').popup('close');
-      }, 1500);
+      $('#post-space').popup('close');
+      $("#post-space").on("popupafterclose", function () {
+        $('#post-space-confirmation').popup('open')
+        setTimeout(function () {
+          $('#post-space-confirmation').popup('close');
+        }, 1500);
+        onloadpopupOpen();
+      })
 //---------------replace with a toast notification---------------
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(response.latitude,response.longitude),
@@ -307,13 +309,14 @@ var claimSpace = function(e){
       type: 'PUT',
       data: data
     }).done(function(response){
-      $('#space-options p').remove();
-      $('#space-options a').remove();
-      $('#space-options button').remove();
-      $('#space-options h4').text('Claimed √');
-      setTimeout(function () {
-        $('#space-options').popup('close');
-      }, 1500);
+
+      // $('#space-options p').remove();
+      // $('#space-options a').remove();
+      // $('#space-options button').remove();
+      // $('#space-options h4').text('Claimed √');
+      // setTimeout(function () {
+      //   $('#space-options').popup('close');
+      // }, 1500);
 //---------------replace with a toast notification---------------
       userData.recentClaim = spaceId;
       $('#cancel_claim').show();
