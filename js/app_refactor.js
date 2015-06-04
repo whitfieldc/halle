@@ -459,10 +459,10 @@ var liveDrop = function(childSnapshot, prevChildName){
   var newChild = childSnapshot.val();
   var newChildKey = Object.keys(newChild)[0];
   var spaceObj = JSON.parse(newChild[newChildKey]);
-  console.log(spaceObj.poster_id);
-  console.log(userData.id);
+  // console.log(spaceObj.poster_id);
+  // console.log(userData.id);
   if (spaceObj.poster_id != userData.id){
-    console.log('this shouldnt happen');
+    // console.log('this shouldnt happen');
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
       map: map,
