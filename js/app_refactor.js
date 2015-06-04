@@ -16,7 +16,8 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 });
 
 $(document).on("pagecreate", "#page-map", function(e, data){
-
+  var directionsDisplay;
+  markerArray = []
   var mapOptions = {
     zoom: 13,
     disableDefaultUI: true,
@@ -66,7 +67,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#cancel_claim').on('click', function(e){
     e.preventDefault();
-    deleteClaim();
+    cancelClaim();
     // clear overlay?
     centerMap(map);
   });
@@ -157,6 +158,7 @@ var getLocation = function() {
 var centerMap = function(map){
   getLocation().then(function(response){
     map.setCenter(response);
+    map.setZoom(15);
   });
 };
 
@@ -275,14 +277,15 @@ var claimSpace = function(e){
     }).fail(function(response){
       console.log('claim space user update failed');
     });
-    var destination = response.latitude +","+ response.longitude
+    var destination = response.latitude +","+ response.longitude;
+    clearMarkers();
     calcRoute(destination, map);
   }).fail(function(response) {
     console.log("claim space ajax call failed");
   });
 };
 
-var deleteClaim = function(e){
+var cancelClaim = function(e){
   var spaceId = userData.recentClaim;
   var headers = '{"Content-Type":"application/json"}';
   $.ajax({
@@ -299,6 +302,8 @@ var deleteClaim = function(e){
       data: data
     }).done(function(){
       $('#cancel_claim').hide();
+      directionsDisplay.setMap(null)
+      loadSpaces();
     }).fail(function(){
       alert('could not remove claim');
       console.log('could remove claim');
@@ -307,9 +312,8 @@ var deleteClaim = function(e){
 };
 
 var calcRoute = function(finalDestination, map) {
-  var directionsDisplay;
   var directionsService = new google.maps.DirectionsService();
-  directionsDisplay = new google.maps.DirectionsRenderer();
+  directionsDisplay = new google.maps.DirectionsRenderer({});
   directionsDisplay.setMap(map);
 
   getLocation().then(function(currentLocation){
@@ -344,6 +348,7 @@ var loadSpaces = function(){
         id: parkingSpots[i].id,
         creation: parkingSpots[i].converted_time
       });
+      markerArray.push(marker)
       google.maps.event.addListener(marker, 'click', spaceDetails);
     };
   });
@@ -387,8 +392,10 @@ var liveDrop = function(childSnapshot, prevChildName){
     id: spaceObj.id,
     creation: spaceObj.converted_time
   });
+  markerArray.push(marker)
   google.maps.event.addListener(marker, 'click', spaceDetails);
   console.log("Hit firebase");
+  console.log(prevChildName)
 }
 
 //Search
@@ -405,6 +412,7 @@ var localSearch = function(searchObject){
       icon: searchLocation
       // animation: google.maps.Animation.DROP
     });
+    markerArray.push(searchMarker)
     map.setZoom(16);
     map.panTo(place.geometry.location);
   }
@@ -432,6 +440,13 @@ var consumeCheckAdd = function(can_consume){
     console.log('can_consume = false')
   };
 };
+
+var clearMarkers = function() {
+  for (var i = 0; i < markerArray.length; i++ ) {
+    markerArray[i].setMap(null);
+  }
+  markerArray.length = 0;
+}
 
 // Map format???
   // $(".ui-content", this).css({
@@ -472,6 +487,16 @@ var searchLocation = {
   scale: 0.25,
   strokeWeight: 0.2,
   strokeColor: 'black',
+  strokeOpacity: 1,
+  fillColor: 'black',
+  fillOpacity: 1
+}
+
+var openSpace = {
+  path: fontawesome.markers.ARROW_DOWN,
+  scale: 0.5,
+  strokeWeight: 0.2,
+  strokeColor: 'blue',
   strokeOpacity: 1,
   fillColor: 'black',
   fillOpacity: 1
