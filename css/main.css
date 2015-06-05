@@ -29,6 +29,10 @@
   background-color: red;
 }*/
 
+.fa-bars {
+  background-color: none !important;
+}
+
 a {
   text-decoration: none;
 }
