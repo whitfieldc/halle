@@ -591,7 +591,7 @@ var closestSpace = function(){
       };
     };
   var distance = getDistance(currentLocation, closest);
-  if (distance >= 1){
+  if (distance >= .2){
     $('#closest-space').popup('open')
     $('#close').html("Closest Space is "+distance+" miles away")
     setTimeout(function () {
@@ -626,7 +626,7 @@ var closestSpaceList = function(radius){
 var getDistance = function(to, from){
   var dist = google.maps.geometry.spherical.computeDistanceBetween(to, from);
   dist *= 0.00062137 // return distance in miles
-  dist = Math.round(1000.0*dist)/1000.0; //round to nearest 100th of a mile
+  dist = Math.round(100.0*dist)/100.0; //round to nearest 100th of a mile
   console.log(dist)
   return dist
 }
