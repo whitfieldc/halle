@@ -38,7 +38,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#test').on('click', function(e){
     e.preventDefault();
-    
+
   })
 
   $('#logout').on('click', function(e){
@@ -147,7 +147,7 @@ var setProfile = function(authData){
   var name = authData.facebook.cachedUserProfile.name;
   var photo = authData.facebook.cachedUserProfile.picture.data.url;
   $('#user h2').text(name);
-  $('#user img').attr('src', photo);
+  $('#user-photo').attr('src', photo);
   $('#cancel_post').hide();
   $('#cancel_claim').hide();
 };

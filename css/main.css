@@ -27,6 +27,23 @@ header {
 #car {
   margin-left: 10px;
   color: yellow;
+  height: 20px;
+}
+
+#center{
+  height: 15px;
+}
+
+#search{
+ height: 15px;
+}
+
+#create-space{
+  height: 10px;
+}
+
+#profile{
+  height:15px;
 }
 
 .round {
