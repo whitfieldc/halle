@@ -73,6 +73,8 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   $('#page-map').on('click', '#center', function(e){
     e.preventDefault();
     centerMap(map);
+    closestSpace()
+    // debugger;
   });
 
   $('#page-map').on('click', '#profile', function(e){
@@ -293,6 +295,10 @@ var deleteSpace = function(){
   }).done(function(){
     $('#cancel_post').hide();
     $('#user').panel("close");
+    $('#remove-space-confirmation').popup('open')
+    setTimeout(function () {
+      $('#remove-space-confirmation').popup('close');
+    }, 1500);
     var data = {user:{claim: true}};
     $.ajax({
       url: baseUrl + 'users/'+fbData.facebook.id,
@@ -376,6 +382,10 @@ var cancelClaim = function(e){
     data: data
   }).done(function(response) {
     var userData = {user:{post: true}};
+    $('#cancel-space-confirmation').popup('open')
+    setTimeout(function () {
+      $('#cancel-space-confirmation').popup('close');
+    }, 1500);
     $.ajax({
       url: baseUrl + 'users/'+fbData.facebook.id,
       type: 'PUT',
@@ -584,14 +594,22 @@ var closestSpace = function(){
     };
   var distance = getDistance(currentLocation, closest);
   if (distance >= 1){
-    alert("Closest Space is "+distance+" miles away.")
+    $('#closest-space').popup('open')
+    $('#close').html("Closest Space is "+distance+" miles away")
+    setTimeout(function () {
+      $('#closest-space').popup('close');
+    }, 2500);
   }
   else {
     distance *= 5280
-    alert("Closest Space is "+distance+" feet away.")
+    $('#closest-space').popup('open')
+    $('#close').html("Closest Space is "+distance+" feet away")
+    setTimeout(function () {
+      $('#closest-space').popup('close');
+    }, 2500);
   }
-  return closest;
   });
+  return closest;
 };
 
 var closestSpaceList = function(radius){
