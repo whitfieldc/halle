@@ -50,6 +50,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
+    centerMap(map);
     $('#post-space').popup("open");
     $(':input','#post-space').val('');
     $('#post-space').popup("open", {
