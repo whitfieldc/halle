@@ -56,6 +56,13 @@ a {
 }
 
 
+h1 {
+  margin: 0px;
+}
+
+h2 {
+  margin: 0px;
+}
 
 #pac-input{
   height: 50px;
@@ -97,3 +104,35 @@ width: 3.2em;
 border-radius: 35px;
 height: 3.2em;
 }
+
+#closest-space{
+  position:fixed;
+  top:9%;
+  left:11%;
+  width: 85%;
+}
+
+#claim-space-confirmation{
+  position:fixed;
+  top:8%;
+  left: 38%;
+}
+
+#post-space-confirmation{
+  position:fixed;
+  top:9%;
+  left: 38%;
+}
+
+#cancel-space-confirmation{
+  position:fixed;
+  top:8%;
+  left: 38%;
+}
+
+#remove-space-confirmation{
+  position:fixed;
+  top:9%;
+  left: 38%;
+}
+
