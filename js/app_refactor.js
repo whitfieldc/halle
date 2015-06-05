@@ -24,8 +24,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   markerArray = [];
   var mapOptions = {
     zoom: 13,
-    disableDefaultUI: true,
-    zoomControl: true
+    disableDefaultUI: true
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
@@ -50,6 +49,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
 
   $('#page-map').on( 'click', '#create-space', function(e){
     e.preventDefault();
+    centerMap(map);
     $('#post-space').popup("open");
     $(':input','#post-space').val('');
     $('#post-space').popup("open", {
@@ -72,6 +72,8 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   $('#page-map').on('click', '#center', function(e){
     e.preventDefault();
     centerMap(map);
+    closestSpace()
+    // debugger;
   });
 
   $('#page-map').on('click', '#profile', function(e){
@@ -145,7 +147,6 @@ var setProfile = function(authData){
   var name = authData.facebook.cachedUserProfile.name;
   var photo = authData.facebook.cachedUserProfile.picture.data.url;
   $('#user h2').text(name);
-  $('#user h4').text('Carma:');
   $('#user img').attr('src', photo);
   $('#cancel_post').hide();
   $('#cancel_claim').hide();
@@ -292,6 +293,10 @@ var deleteSpace = function(){
   }).done(function(){
     $('#cancel_post').hide();
     $('#user').panel("close");
+    $('#remove-space-confirmation').popup('open')
+    setTimeout(function () {
+      $('#remove-space-confirmation').popup('close');
+    }, 1500);
     var data = {user:{claim: true}};
     $.ajax({
       url: baseUrl + 'users/'+fbData.facebook.id,
@@ -360,7 +365,7 @@ var countdownTimer = function(latitude, longitude){
         cancelClaim();
         $('#countdown-end').popup("open");
       };
-    }, 300000); //5 minutes
+    }, 60000); //1 minute
   })
 };
 
@@ -375,6 +380,10 @@ var cancelClaim = function(e){
     data: data
   }).done(function(response) {
     var userData = {user:{post: true}};
+    $('#cancel-space-confirmation').popup('open')
+    setTimeout(function () {
+      $('#cancel-space-confirmation').popup('close');
+    }, 1500);
     $.ajax({
       url: baseUrl + 'users/'+fbData.facebook.id,
       type: 'PUT',
@@ -583,14 +592,22 @@ var closestSpace = function(){
     };
   var distance = getDistance(currentLocation, closest);
   if (distance >= 1){
-    alert("Closest Space is "+distance+" miles away.")
+    $('#closest-space').popup('open')
+    $('#close').html("Closest Space is "+distance+" miles away")
+    setTimeout(function () {
+      $('#closest-space').popup('close');
+    }, 2500);
   }
   else {
     distance *= 5280
-    alert("Closest Space is "+distance+" feet away.")
+    $('#closest-space').popup('open')
+    $('#close').html("Closest Space is "+distance+" feet away")
+    setTimeout(function () {
+      $('#closest-space').popup('close');
+    }, 2500);
   }
-  return closest;
   });
+  return closest;
 };
 
 var closestSpaceList = function(radius){
