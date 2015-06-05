@@ -19,6 +19,7 @@
   text-shadow: none;
 }
 
+
 header {
   z-index: 4;
 }
@@ -51,21 +52,8 @@ header {
   height: 500px;
 }
 
-.fa-bars {
-  background-color: none !important;
-}
-
 a {
   text-decoration: none;
-}
-
-
-h1 {
-  margin: 0px;
-}
-
-h2 {
-  margin: 0px;
 }
 
 #pac-input{
@@ -140,3 +128,35 @@ height: 3.2em;
   left: 38%;
 }
 
+.fa-bars {
+position: absolute;
+left: 3%;
+top: 11%;
+cursor: pointer;
+}
+
+#search {
+  border: solid;
+}
+
+.fa-search {
+  margin-left: -3.0px;
+  margin-top: -2.0px;
+}
+
+#create-space {
+  border: solid;
+}
+
+.fa-car {
+  margin-left: -3.2px;
+  margin-top: 2px;
+}
+
+#center {
+  border: solid;
+}
+.fa-compass{
+  margin-left: -7px;
+  margin-top: -4.0px;
+}
