@@ -24,8 +24,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   markerArray = [];
   var mapOptions = {
     zoom: 13,
-    disableDefaultUI: true,
-    zoomControl: true
+    disableDefaultUI: true
   };
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
@@ -148,7 +147,6 @@ var setProfile = function(authData){
   var name = authData.facebook.cachedUserProfile.name;
   var photo = authData.facebook.cachedUserProfile.picture.data.url;
   $('#user h2').text(name);
-  $('#user h4').text('Carma:');
   $('#user img').attr('src', photo);
   $('#cancel_post').hide();
   $('#cancel_claim').hide();
@@ -367,7 +365,7 @@ var countdownTimer = function(latitude, longitude){
         cancelClaim();
         $('#countdown-end').popup("open");
       };
-    }, 300000); //5 minutes
+    }, 60000); //1 minute
   })
 };
 
