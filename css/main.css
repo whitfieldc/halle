@@ -42,10 +42,6 @@ header {
   height: 10px;
 }
 
-#profile{
-  height:15px;
-}
-
 .round {
   border-radius: 50%;
   overflow: hidden;
@@ -176,4 +172,43 @@ cursor: pointer;
 .fa-compass{
   margin-left: -7px;
   margin-top: -4.0px;
+}
+
+#profile{
+  background: none;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+  height: 40px;
+  width: 50px;
+}
+
+#menu {
+  height: 40px;
+  position: absolute;
+  top: -10%;
+  left: 3%;
+}
+
+#mglass {
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  top: 5%;
+  left: 10%;
+}
+
+#compass {
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  right: -3%;
+  bottom: -3%;
+}
+
+#marker {
+  height: 55px;
+  position: absolute;
+  top: 0%;
+  left: -2%;
 }
