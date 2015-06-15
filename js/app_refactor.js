@@ -47,8 +47,8 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     window.location.href = '#landing-screen';
   });
 
-  $('#page-map').on( 'click', '#create-space', function(e){
-    e.preventDefault();
+  $('#page-map').on( 'click', '#create-space', function(ev){
+    ev.preventDefault();
     centerMap(map);
     $('#post-space').popup("open");
     $(':input','#post-space').val('');
@@ -57,8 +57,12 @@ $(document).on("pagecreate", "#page-map", function(e, data){
       positionTo: "window",
     });
     $('#add-space').on('click', function(e){
-      e.preventDefault();
-      addSpace(e);
+      if (e.handled !== true) {
+        e.preventDefault();
+        // console.log('hitting the click event')
+        addSpace(e);
+        e.handled = true;
+      };
     });
   });
 
@@ -199,7 +203,9 @@ var markCenter = function(map){
 };
 
 var addSpace = function(){
+  // console.log('entered add space function')
   getLocation().then(function(response){
+    // console.log('got location')
     var note = $('#note').val();
     var latitude  = response.A;
     var longitude = response.F;
@@ -212,6 +218,7 @@ var addSpace = function(){
       data: data,
       headers: headers
     }).done(function(response) {
+      console.log('posted with ajax')
       $('#post-space').popup('close');
       if ($(':input','#post-space').val().length > 1) {
         $("#post-space").on("popupafterclose", function () {
@@ -234,7 +241,7 @@ var addSpace = function(){
         zIndex: google.maps.Marker.MAX_ZINDEX + 1,
         draggable: true
       });
-      console.log(response);
+      // console.log(response);
       userData.recentPost = response.id;
 
       google.maps.event.addListener(marker, 'click', spaceDetails);
@@ -254,7 +261,7 @@ var addSpace = function(){
         consumeCheckAdd(response.can_consume);
         // consumeCheck.off();
       }).fail(function(response){
-        console.log('failed to add space')
+        console.log('failed to update user data')
       });
     }).fail(function(response) {
       alert("Could not create space");
@@ -474,7 +481,7 @@ var liveDrop = function(childSnapshot, prevChildName){
   // console.log(spaceObj.poster_id);
   // console.log(userData.id);
   if (spaceObj.poster_id != userData.id){
-    // console.log('this shouldnt happen');
+    console.log('this shouldnt happen');
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(spaceObj.latitude,spaceObj.longitude),
       map: map,
@@ -527,11 +534,14 @@ var consumeCheck = function(can_consume){
 var consumeCheckAdd = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
-    loadSpaces();
-    console.log('carma fucking us again')
-    console.log('can_consume = true')
+    if (markerArray.length < 1) {
+      loadSpaces();
+      console.log(markerArray);
+      console.log('carma fucking us again');
+      console.log('can_consume = true')
+    };
   } else {
-    console.log('can_consume = false')
+    console.log('can_consume = false');
   };
 };
 
