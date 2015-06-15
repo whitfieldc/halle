@@ -527,11 +527,14 @@ var consumeCheck = function(can_consume){
 var consumeCheckAdd = function(can_consume){
   if (can_consume === true){
     $('#carma-false').hide();
-    loadSpaces();
-    console.log('carma fucking us again')
-    console.log('can_consume = true')
+    if (markerArray.length < 1) {
+      loadSpaces();
+      console.log(markerArray);
+      console.log('carma fucking us again');
+      console.log('can_consume = true')
+    };
   } else {
-    console.log('can_consume = false')
+    console.log('can_consume = false');
   };
 };
 
