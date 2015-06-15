@@ -59,7 +59,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     $('#add-space').on('click', function(e){
       if (e.handled !== true) {
         e.preventDefault();
-        console.log('hitting the click event')
+        // console.log('hitting the click event')
         addSpace(e);
         e.handled = true;
       };
@@ -203,9 +203,9 @@ var markCenter = function(map){
 };
 
 var addSpace = function(){
-  console.log('entered add space function')
+  // console.log('entered add space function')
   getLocation().then(function(response){
-    console.log('got location')
+    // console.log('got location')
     var note = $('#note').val();
     var latitude  = response.A;
     var longitude = response.F;
@@ -241,7 +241,7 @@ var addSpace = function(){
         zIndex: google.maps.Marker.MAX_ZINDEX + 1,
         draggable: true
       });
-      console.log(response);
+      // console.log(response);
       userData.recentPost = response.id;
 
       google.maps.event.addListener(marker, 'click', spaceDetails);
