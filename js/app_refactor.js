@@ -110,11 +110,11 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     };
   })
 
-  var input = (document.getElementById('pac-input'));
-  var searchBox = new google.maps.places.SearchBox((input));
-
-  google.maps.event.addListener(searchBox, 'places_changed', function(){
-    localSearch(searchBox)
+  $('#pac-input').on('keypress', function(e){
+    if(e.which == 13) {
+      e.preventDefault();
+      testSearch();
+    }
   });
 
   $(window).on('swiperight', function(e){
@@ -499,23 +499,32 @@ var liveDrop = function(childSnapshot, prevChildName){
 }
 
 //Search
-var localSearch = function(searchObject){
-  var places = searchObject.getPlaces();
-    if (typeof searchMarker !== 'undefined') {
-      searchMarker.setMap(null)
-    };
+var testSearch = function(){
+var geocoder = new google.maps.Geocoder();
 
-  for (var i = 0, place; place = places[i]; i++) {
-    searchMarker = new google.maps.Marker({
-      position: place.geometry.location,
-      map: map,
-      icon: searchLocation
+  var address = $('#pac-input').val();
+  geocoder.geocode( { 'address': address}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) 
+    {
+      if (typeof searchMarker !== 'undefined') {
+        searchMarker.setMap(null)
+      };
+
+      map.setCenter(results[0].geometry.location);
+      searchMarker = new google.maps.Marker({
+        position: results[0].geometry.location,
+        map: map,
+        icon: searchLocation
       // animation: google.maps.Animation.DROP
-    });
+      });
     markerArray.push(searchMarker)
-    map.setZoom(16);
-    map.panTo(place.geometry.location);
-  }
+    map.setZoom(18);
+    } 
+    else 
+    {
+      alert("Location was not found");
+    }
+  });
 }
 
 var consumeCheck = function(can_consume){
