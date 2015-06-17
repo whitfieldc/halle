@@ -115,7 +115,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     if(e.which == 13) {
       e.preventDefault();
       locationSearch();
-      // closestSpaceList(1);
     }
   });
 
@@ -199,7 +198,8 @@ var markCenter = function(map){
     var marker = new google.maps.Marker({
       position: response,
       map: map,
-      icon: currentLocation
+      icon: currentLocation,
+      name: "currentLocation"
     });
   });
 };
@@ -510,6 +510,7 @@ var geocoder = new google.maps.Geocoder();
     {
       if (typeof searchMarker !== 'undefined') {
         searchMarker.setMap(null)
+        deleteSearchMarker();
       };
 
       lastSearch = results[0].geometry.location
@@ -518,7 +519,8 @@ var geocoder = new google.maps.Geocoder();
       searchMarker = new google.maps.Marker({
         position: results[0].geometry.location,
         map: map,
-        icon: searchLocation
+        icon: searchLocation,
+        name: "searchMarker"
       // animation: google.maps.Animation.DROP
       });
     markerArray.push(searchMarker)
@@ -530,6 +532,15 @@ var geocoder = new google.maps.Geocoder();
       alert("Location was not found");
     }
   });
+}
+
+
+var deleteSearchMarker = function (){
+  for (var i = 0; i < markerArray.length; i++) {
+    if (markerArray[i].name === "searchMarker"){
+      markerArray.splice(i, 1);
+    }
+  };
 }
 
 var consumeCheck = function(can_consume){
@@ -639,11 +650,12 @@ var closestSpaceList = function(radius){
   // getLocation().then(function(currentLocation){
     for(var i = 1; i < markerArray.length; i++){
       if(getDistance(lastSearch, markerArray[i].position) <= radius) {
+        if(markerArray[i].name !== "searchMarker")
         closestArray.push(markerArray[i])
       };
     };
     debugger;
-  console.log("Spaces within " +radius+ " mile: " + (closestArray.length -1)) //Subtract searchMaker
+  console.log("Spaces within " +radius+ " mile: " + closestArray.length) //Subtract searchMaker
   return closestArray; // Call .length to get the number of spaces, OBVI
   // });
 };
