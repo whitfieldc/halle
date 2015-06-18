@@ -2,7 +2,7 @@ var ref = new Firebase("https://halle.firebaseio.com");
 var fbData;
 var userData;
 // var baseUrl = 'http://localhost:3000/'
-var baseUrl = 'http://calm-island-3256.herokuapp.com/'
+var baseUrl = 'https://calm-island-3256.herokuapp.com/'
 
 $(document).on("pagecreate", "#landing-screen", function(e, data){
 
@@ -504,7 +504,7 @@ var geocoder = new google.maps.Geocoder();
 
   var address = $('#pac-input').val();
   geocoder.geocode( { 'address': address}, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) 
+    if (status == google.maps.GeocoderStatus.OK)
     {
       if (typeof searchMarker !== 'undefined') {
         searchMarker.setMap(null)
@@ -519,8 +519,8 @@ var geocoder = new google.maps.Geocoder();
       });
     markerArray.push(searchMarker)
     map.setZoom(18);
-    } 
-    else 
+    }
+    else
     {
       alert("Location was not found");
     }
