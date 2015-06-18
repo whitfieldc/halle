@@ -514,7 +514,7 @@ var geocoder = new google.maps.Geocoder();
       };
 
       lastSearch = results[0].geometry.location
-      console.log("LAST: " + lastSearch)
+      console.log("LAST: " + lastSearch) //Test Line, remove when ready to DEPLOY to the public and take all their money
       map.panTo(results[0].geometry.location);
       searchMarker = new google.maps.Marker({
         position: results[0].geometry.location,
@@ -661,7 +661,6 @@ var getDistance = function(to, from){
   var dist = google.maps.geometry.spherical.computeDistanceBetween(to, from);
   dist *= 0.00062137 // return distance in miles
   dist = Math.round(100.0*dist)/100.0; //round to nearest 100th of a mile
-  // console.log(dist)
   return dist
 }
 
