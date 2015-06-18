@@ -1,7 +1,7 @@
 #map-canvas {
   padding: 0;
   position : absolute;
-  top : 40px;
+  top : 32px;
   right : 0px;
   bottom : 58px;
   left : 0px;
@@ -22,6 +22,7 @@
 
 header {
   z-index: 4;
+  height: 4%;
 }
 
 #car {
