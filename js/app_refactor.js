@@ -626,21 +626,17 @@ var closestSpace = function(){
       };
     };
   var distance = getDistance(currentLocation, closest);
-  if (distance >= .2){
+  var measureUnit = "miles"
+  if (distance <= .2){
+    distance *= 5280;
+    measureUnit = "feet";
+  };
+//-------------------------------Popup Refactor TEST-----------------------
     $('#closest-space').popup('open')
-    $('#close').html("Closest Space is "+distance+" miles away")
+    $('#close').html("Closest Space is " + distance + " " + measureUnit + " away")
     setTimeout(function () {
       $('#closest-space').popup('close');
     }, 2500);
-  }
-  else {
-    distance *= 5280
-    $('#closest-space').popup('open')
-    $('#close').html("Closest Space is "+distance+" feet away")
-    setTimeout(function () {
-      $('#closest-space').popup('close');
-    }, 2500);
-  }
   });
   return closest;
 };
