@@ -626,12 +626,13 @@ var closestSpace = function(){
       };
     };
   var distance = getDistance(currentLocation, closest);
+//-------------------------------Popup Refactor TEST-----------------------
   var measureUnit = "miles"
   if (distance <= .2){
     distance *= 5280;
     measureUnit = "feet";
   };
-//-------------------------------Popup Refactor TEST-----------------------
+//-------------------------------------
     $('#closest-space').popup('open')
     $('#close').html("Closest Space is " + distance + " " + measureUnit + " away")
     setTimeout(function () {
