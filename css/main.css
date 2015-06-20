@@ -29,6 +29,7 @@ header {
   margin-left: 10px;
   color: yellow;
   height: 20px;
+  vertical-align: -2px;
 }
 
 #center{
@@ -46,8 +47,14 @@ header {
 .round {
   border-radius: 50%;
   overflow: hidden;
-  width: 150px;
-  height: 150px;
+  width: 8em;
+  height: 8em;
+  /*text-align: center;*/
+  margin-left: auto;
+  margin-right: auto;
+  border: solid 2px #196b8c;
+  /*border-color: ;*/
+  text-shadow: 0 1px 0 #444;
 }
 .round img {
   display: block;
@@ -191,31 +198,29 @@ cursor: pointer;
 }
 
 #menu {
-  height: 40px;
+  height: 25px;
   position: absolute;
-  top: -1%;
-  left: 3%;
-}
-
-#mglass {
-  height: 40px;
-  width: 40px;
-  position: absolute;
-  top: 5%;
+  top: 15%;
   left: 10%;
 }
 
-#compass {
-  height: 50px;
-  width: 50px;
+#mglass {
+  height: 28px;
   position: absolute;
-  right: -3%;
-  bottom: -3%;
+  top: 16%;
+  left: 17%;
+}
+
+#compass {
+  height: 32px;
+  position: absolute;
+  left: 15%;
+  bottom: 15%;
 }
 
 #marker {
-  height: 55px;
+  height: 45px;
   position: absolute;
-  top: 0%;
-  left: -2%;
+  top: 15%;
+  left: 26%;
 }
