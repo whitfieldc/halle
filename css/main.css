@@ -19,7 +19,6 @@
   text-shadow: none;
 }
 
-
 header {
   z-index: 4;
   height: 4%;
@@ -30,18 +29,6 @@ header {
   color: yellow;
   height: 20px;
   vertical-align: -2px;
-}
-
-#center{
-  height: 15px;
-}
-
-#search{
- height: 15px;
-}
-
-#create-space{
-  height: 10px;
 }
 
 .round {
@@ -89,33 +76,36 @@ a {
 }
 
 #create-space {
-position: absolute;
-top: 85%;
-z-index: 100;
-right: 3%;
-width: 4.2em;
-border-radius: 35px;
-height: 4.2em;
+  position: absolute;
+  bottom: 1%;
+  z-index: 100;
+  right: 3%;
+  width: 4.5em;
+  border-radius: 50%;
+  height: 4.5em;
+  border: solid;
 }
 
 #center {
   position: absolute;
-  top: 74%;
+  bottom: 15%;
   z-index: 100;
   right: 3%;
-  width: 3.2em;
-  border-radius: 35px;
-  height: 3.2em;
+  width: 3.5em;
+  border-radius: 50%;
+  height: 3.5em;
+  border: solid;
 }
 
 #search {
-position: absolute;
-top: 88%;
-z-index: 100;
-right: 28.3%;
-width: 3.2em;
-border-radius: 35px;
-height: 3.2em;
+  position: absolute;
+  bottom: 1%;
+  z-index: 100;
+  right: 28%;
+  width: 3.5em;
+  border-radius: 50%;
+  height: 3.5em;
+  border: solid;
 }
 
 #closest-space{
@@ -156,17 +146,9 @@ top: 11%;
 cursor: pointer;
 }
 
-#search {
-  border: solid;
-}
-
 .fa-search {
   margin-left: -3.0px;
   margin-top: -2.0px;
-}
-
-#create-space {
-  border: solid;
 }
 
 .fa-car {
@@ -174,9 +156,6 @@ cursor: pointer;
   margin-top: 2px;
 }
 
-#center {
-  border: solid;
-}
 .fa-compass{
   margin-left: -7px;
   margin-top: -4.0px;
@@ -198,29 +177,38 @@ cursor: pointer;
 }
 
 #menu {
-  height: 25px;
+  height: 60%;
   position: absolute;
-  top: 15%;
+  top: 20%;
   left: 10%;
 }
 
 #mglass {
-  height: 28px;
+  height: 60%;
   position: absolute;
-  top: 16%;
-  left: 17%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
 }
 
 #compass {
-  height: 32px;
+  height: 65%;
   position: absolute;
-  left: 15%;
-  bottom: 15%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
 }
 
 #marker {
-  height: 45px;
+  height: 70%;
   position: absolute;
-  top: 15%;
-  left: 26%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
 }
