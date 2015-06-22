@@ -73,6 +73,7 @@ a {
   background-color: white;
   border: 3px solid #268ef7;
   text-shadow: none;
+  color: black;
 }
 
 #create-space {
@@ -106,7 +107,8 @@ a {
   width: 3.5em;
   border-radius: 50%;
   height: 3.5em;
-  border: solid;
+  border: solid white;
+  color: black;
 }
 
 #post-space{
