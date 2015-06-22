@@ -525,7 +525,7 @@ var geocoder = new google.maps.Geocoder();
       });
     markerArray.push(searchMarker)
     map.setZoom(18);
-    closestSpaceList(2); //Forgot what this is for??
+    closestSpaceList(2); //Find # of spaces within X miles
     } 
     else 
     {
@@ -653,6 +653,11 @@ var closestSpaceList = function(radius){
     };
     debugger;
   console.log("Spaces within " +radius+ " mile: " + closestArray.length) //Subtract searchMaker
+  $('#search-radius').popup('open')
+  $('#radius').html("Spaces within " +radius+" miles: " + closestArray.length)
+  setTimeout(function () {
+    $('#search-radius').popup('close');
+  }, 2500);
   return closestArray; // Call .length to get the number of spaces, OBVI
   // });
 };

@@ -129,6 +129,13 @@ a {
   width: 85%;
 }
 
+#search-radius{
+  position:fixed;
+  top:9%;
+  left:11%;
+  width: 85%;
+}
+
 #claim-space-confirmation{
   position:fixed;
   top:8%;
