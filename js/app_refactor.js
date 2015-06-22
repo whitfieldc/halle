@@ -530,7 +530,7 @@ var geocoder = new google.maps.Geocoder();
       });
     markerArray.push(searchMarker)
     map.setZoom(18);
-    closestSpaceList(2); //Find # of spaces within X miles
+    closestSpaceList(1); //Find # of spaces within X miles
     } 
     else 
     {
