@@ -82,7 +82,6 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     e.preventDefault();
     centerMap(map);
     closestSpace()
-    // debugger;
   });
 
   $('#page-map').on('click', '#profile', function(e){
@@ -642,7 +641,6 @@ var closestSpaceList = function(radius){
         closestArray.push(markerArray[i])
       };
     };
-  debugger;
   return closestArray; // Call .length to get the number of spaces, OBVI
   });
 };
