@@ -22,11 +22,20 @@ preview the app in [a mobile emulator](http://mobt.me/BlJo).
   * jQuery mobile quirks/bugs
 
 ##Next Steps
-  * facilitate one-to-one communication between our users.
-  * improve performance by optimizing geolocation processes
+  * Facilitate one-to-one communication between our users.
+  * Improve performance by optimizing geolocation processes
 
 ##The Team
   * Team Lead: Sean Sassenrath
   * Team Members: Nico Lazzara, Erica Marroquin, Charles Whitfield
 
-##Run
+##Run Halle Locally:
+In the CLI:
+  1. Clone the repo - enter 'git clone https://github.com/whitfieldc/halle.git'
+  2. Spin up a server - enter 'python -m SimpleHTTPServer'
+
+In Google Chrome:
+  3. Install the [Ripple Emulator chrome extension](https://chrome.google.com/webstore/detail/ripple-emulator-beta/geelfhphabnejjhdalkjhgipohgpdnoc?hl=en)
+  4. Go to localhost:8000
+  5. Click the Ripple Emulator icon, select "enable" and choose "Apache Cordova 2.0.0"
+  6. Click the Emulator's "settings" menu and set "Cross Domain Proxy" to "Disabled"
