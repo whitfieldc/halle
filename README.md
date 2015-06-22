@@ -1,4 +1,4 @@
-# Halle Park it forward
+# Halle: park it forward
 
 ##Description
 Halle is an Android & iOS app designed to crowd-source information on parking spaces for drivers in urban areas.
