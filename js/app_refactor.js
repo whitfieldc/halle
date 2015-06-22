@@ -635,6 +635,7 @@ var closestSpace = function(){
   var measureUnit = "miles"
   if (distance <= .2){
     distance *= 5280;
+    distance = Math.round(1.0*distance)/1.0; //round to nearest foot
     measureUnit = "feet";
   };
 //-------------------------------------
