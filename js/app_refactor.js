@@ -50,6 +50,9 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   $('#page-map').on( 'click', '#create-space', function(ev){
     ev.preventDefault();
     centerMap(map);
+    $('#create-space').hide();
+    $('#center').hide();
+    $('#search').hide();
     $('#post-space').popup("open");
     $(':input','#post-space').val('');
     $('#post-space').popup("open", {
@@ -61,11 +64,13 @@ $(document).on("pagecreate", "#page-map", function(e, data){
         e.preventDefault();
         // console.log('hitting the click event')
         addSpace(e);
+        $('#create-space').show();
+        $('#center').show();
+        $('#search').show();
         e.handled = true;
       };
     });
   });
-
 
   $('#page-map').on('click', '#claim', function(e){
     console.log("claim is working");
