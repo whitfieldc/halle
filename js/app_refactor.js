@@ -65,12 +65,18 @@ $(document).on("pagecreate", "#page-map", function(e, data){
         e.preventDefault();
         // console.log('hitting the click event')
         addSpace(e);
-        $('#create-space').show();
-        $('#center').show();
-        $('#search').show();
         e.handled = true;
       };
     });
+  });
+
+  $('#post-space').bind({
+    popupafterclose: function(e) {
+      e.preventDefault();
+      $('#create-space').show();
+      $('#center').show();
+      $('#search').show();
+    }
   });
 
   $('#page-map').on('click', '#claim', function(e){
@@ -530,8 +536,8 @@ var geocoder = new google.maps.Geocoder();
     markerArray.push(searchMarker)
     map.setZoom(18);
     closestSpaceList(1); //Find # of spaces within X miles
-    } 
-    else 
+    }
+    else
     {
       alert("Location was not found");
     }
