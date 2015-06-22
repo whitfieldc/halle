@@ -3,6 +3,9 @@
 ##Description
 Halle is an Android & iOS app designed to crowd-source information on parking spaces for drivers in urban areas.
 
+Download it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.halle.parking) or
+preview the app in [a mobile emulator](http://mobt.me/BlJo).
+
 ##Technologies Used
   * Backend: Rails-API, ActiveRecord, PostgreSQL, Firebase
   * Frontend: Apache Cordova, Javascript, jQuery & jQuery Mobile, HTML, CSS
@@ -25,3 +28,5 @@ Halle is an Android & iOS app designed to crowd-source information on parking sp
 ##The Team
   * Team Lead: Sean Sassenrath
   * Team Members: Nico Lazzara, Erica Marroquin, Charles Whitfield
+
+##Run
