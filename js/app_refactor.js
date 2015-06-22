@@ -22,6 +22,7 @@ $(document).on("pagecreate", "#landing-screen", function(e, data){
 $(document).on("pagecreate", "#page-map", function(e, data){
   var directionsDisplay;
   markerArray = [];
+  var lastSearch;
   var mapOptions = {
     zoom: 13,
     disableDefaultUI: true
@@ -98,7 +99,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
     e.preventDefault();
     cancelClaim();
     // clear overlay?
-    centerMap(map);
+    // centerMap(map);
   });
 
   $('#search-area').hide();
@@ -117,7 +118,7 @@ $(document).on("pagecreate", "#page-map", function(e, data){
   $('#pac-input').on('keypress', function(e){
     if(e.which == 13) {
       e.preventDefault();
-      testSearch();
+      locationSearch();
     }
   });
 
@@ -190,18 +191,19 @@ var getLocation = function() {
 
 var centerMap = function(map){
   getLocation().then(function(response){
-    map.setCenter(response);
+    map.panTo(response);
     map.setZoom(15);
   });
 };
 
 var markCenter = function(map){
   getLocation().then(function(response){
-    map.setCenter(response);
+    map.panTo(response);
     var marker = new google.maps.Marker({
       position: response,
       map: map,
-      icon: currentLocation
+      icon: currentLocation,
+      name: "currentLocation"
     });
   });
 };
@@ -503,7 +505,7 @@ var liveDrop = function(childSnapshot, prevChildName){
 }
 
 //Search
-var testSearch = function(){
+var locationSearch = function(){
 var geocoder = new google.maps.Geocoder();
 
   var address = $('#pac-input').val();
@@ -512,23 +514,37 @@ var geocoder = new google.maps.Geocoder();
     {
       if (typeof searchMarker !== 'undefined') {
         searchMarker.setMap(null)
+        deleteSearchMarker();
       };
 
-      map.setCenter(results[0].geometry.location);
+      lastSearch = results[0].geometry.location
+      console.log("LAST: " + lastSearch) //Test Line, remove when ready to DEPLOY to the public and take all their money
+      map.panTo(results[0].geometry.location);
       searchMarker = new google.maps.Marker({
         position: results[0].geometry.location,
         map: map,
-        icon: searchLocation
+        icon: searchLocation,
+        name: "searchMarker"
       // animation: google.maps.Animation.DROP
       });
     markerArray.push(searchMarker)
     map.setZoom(18);
-    }
-    else
+    closestSpaceList(1); //Find # of spaces within X miles
+    } 
+    else 
     {
       alert("Location was not found");
     }
   });
+}
+
+
+var deleteSearchMarker = function (){
+  for (var i = 0; i < markerArray.length; i++) {
+    if (markerArray[i].name === "searchMarker"){
+      markerArray.splice(i, 1);
+    }
+  };
 }
 
 var consumeCheck = function(can_consume){
@@ -614,42 +630,46 @@ var closestSpace = function(){
       };
     };
   var distance = getDistance(currentLocation, closest);
-  if (distance >= .2){
+//-------------------------------Popup Refactor TEST-----------------------
+  var measureUnit = "miles"
+  if (distance <= .2){
+    distance *= 5280;
+    distance = Math.round(1.0*distance)/1.0; //round to nearest foot
+    measureUnit = "feet";
+  };
+//-------------------------------------
     $('#closest-space').popup('open')
-    $('#close').html("Closest Space is "+distance+" miles away")
+    $('#close').html("Closest Space is " + distance + " " + measureUnit + " away")
     setTimeout(function () {
       $('#closest-space').popup('close');
     }, 2500);
-  }
-  else {
-    distance *= 5280
-    $('#closest-space').popup('open')
-    $('#close').html("Closest Space is "+distance+" feet away")
-    setTimeout(function () {
-      $('#closest-space').popup('close');
-    }, 2500);
-  }
   });
   return closest;
 };
 
 var closestSpaceList = function(radius){
   var closestArray = [ ]
-  getLocation().then(function(currentLocation){
+  // getLocation().then(function(currentLocation){
     for(var i = 1; i < markerArray.length; i++){
-      if(getDistance(currentLocation, markerArray[i].position) <= radius) {
+      if(getDistance(lastSearch, markerArray[i].position) <= radius) {
+        if(markerArray[i].name !== "searchMarker")
         closestArray.push(markerArray[i])
       };
     };
+  console.log("Spaces within " +radius+ " mile: " + closestArray.length) //Subtract searchMaker
+  $('#search-radius').popup('open')
+  $('#radius').html("Spaces within " +radius+" miles: " + closestArray.length)
+  setTimeout(function () {
+    $('#search-radius').popup('close');
+  }, 2500);
   return closestArray; // Call .length to get the number of spaces, OBVI
-  });
+  // });
 };
 
 var getDistance = function(to, from){
   var dist = google.maps.geometry.spherical.computeDistanceBetween(to, from);
   dist *= 0.00062137 // return distance in miles
   dist = Math.round(100.0*dist)/100.0; //round to nearest 100th of a mile
-  console.log(dist)
   return dist
 }
 
