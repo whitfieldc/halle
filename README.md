@@ -3,7 +3,7 @@
 ##Description
 Halle is an Android & iOS app designed to crowd-source information on parking spaces for drivers in urban areas.
 
-Download it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.halle.parking) or
+Download it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.halle.parkit) or
 preview the app in [a mobile emulator](http://mobt.me/BlJo).
 
 ##Technologies Used
