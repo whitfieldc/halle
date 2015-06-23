@@ -11,7 +11,7 @@
 #login {
   background-color: #ffffff;
   position: absolute;
-  bottom: 8%;
+  bottom: 10%;
   height: 60px;
   width: 80%;
   left: 10%;
@@ -54,9 +54,9 @@ header {
 }
 
 #logo {
-  margin-left: 16%;
-  margin-top: 30%;
-  height: 500px;
+  right: 0%;
+  position: absolute;
+  top: 15%;
 }
 
 a {
@@ -152,28 +152,6 @@ a {
   top:9%;
   left: 38%;
 }
-
-/*.fa-bars {
-position: absolute;
-left: 3%;
-top: 11%;
-cursor: pointer;
-}
-
-.fa-search {
-  margin-left: -3.0px;
-  margin-top: -2.0px;
-}
-
-.fa-car {
-  margin-left: -3.2px;
-  margin-top: 2px;
-}
-
-.fa-compass{
-  margin-left: -7px;
-  margin-top: -4.0px;
-}*/
 
 #banner-text {
   font-family: 'Roboto', sans-serif;
