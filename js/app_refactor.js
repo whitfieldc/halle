@@ -5,6 +5,9 @@ var userData;
 var baseUrl = 'https://calm-island-3256.herokuapp.com/'
 
 $(document).on("pagecreate", "#landing-screen", function(e, data){
+  var width = $(window).width();
+  // var height = $(window).height();
+  $('#logo').css('width', width+'px')
 
   $('#login').on('click', function(e){
     e.preventDefault();
