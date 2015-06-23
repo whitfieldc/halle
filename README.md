@@ -14,7 +14,14 @@ preview the app in [a mobile emulator](http://mobt.me/BlJo).
   We knew from the outset that for our app to be of practical use, it needed to be on mobile. Apache Cordova allowed us to deliver a mobile app using the front-end web development skills we gained at Dev Bootcamp. We used a Rails-API back-end to store user and parking space data and associate users with spaces they post or claim. This allowed us to implement features like post and claim canceling, the "Carma" rating system to ensure users post spaces about as often as they claim them, and drag-and-drop adjustment of a user's posted space. We used Firebase to add live-updated markers, so users can always see the most recently posted spaces.
 
 ##User Stories
-  * user can do stuff
+  * A user can add an open parking space marker
+  * A user can add a note to their open space marker
+  * A user can remove their most recent open parking space marker
+  * A user can claim a parking space marker
+  * A user can cancel their parking space claim
+  * A user can center the map based on their geolocation
+  * A user can search for available parking spaces in a specific location
+  * A user can see the number of available spaces within a mile of their search
 
 ##Challenges We Faced
   * Mobile hybridization
