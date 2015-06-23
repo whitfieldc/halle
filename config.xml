@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
     <widget xmlns   = "http://www.w3.org/ns/widgets"
         xmlns:gap   = "http://phonegap.com/ns/1.0"
-        id          = "com.halle.parking"
-        versionCode = "10"
-        version     = "1.0.0" >
+        id          = "com.halle.parkit"
+        versionCode = "11"
+        version     = "1.1.0" >
 
     <!-- versionCode is optional and Android only -->
 
-    <name>Halle Test</name>
+    <name>Halle: Park it Forward</name>
 
     <description>
-        Test for Halle parking app
+        Halle - Park it forward!
     </description>
 
     <author href="https://whitfieldc.github.io" email="whitfield.cw@gmail.com">
