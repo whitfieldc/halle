@@ -191,6 +191,7 @@ var getLocation = function() {
     navigator.geolocation.getCurrentPosition(function(position){
       if (position) {
         resolve(new google.maps.LatLng(position.coords.latitude,position.coords.longitude));
+        console.log("This is our position ", position);
       } else {
         reject();
       };
@@ -223,10 +224,13 @@ var addSpace = function(){
   getLocation().then(function(response){
     // console.log('got location')
     var note = $('#note').val();
-    var latitude  = response.A;
-    var longitude = response.F;
+    var latitude  = response.G;
+    var longitude = response.K;
     var data      = {space:{latitude:+latitude, longitude:+longitude, note:note, poster_id:userData.id}};
     var headers   = '{"Content-Type":"application/json"}';
+    console.log("AJAX post to server");
+    console.log("Latitude: ", latitude);
+    console.log("Longitude: ", longitude);
 
     $.ajax({
       url: baseUrl + 'spaces',
@@ -234,6 +238,7 @@ var addSpace = function(){
       data: data,
       headers: headers
     }).done(function(response) {
+
       console.log('posted with ajax')
       $('#post-space').popup('close');
       if ($(':input','#post-space').val().length > 1) {
@@ -292,8 +297,8 @@ var geocodePosition = function(pos){
     if (status == google.maps.GeocoderStatus.OK) {
       var spaceId = userData.recentPost;
       var headers = '{"Content-Type":"application/json"}';
-      var latitude = results[0].geometry.location.A;
-      var longitude = results[0].geometry.location.F;
+      var latitude = results[0].geometry.location.G;
+      var longitude = results[0].geometry.location.K;
       var data = {space:{latitude: latitude, longitude: longitude, change_location: true}};
       $.ajax({
         url: baseUrl + 'spaces/'+spaceId,
@@ -453,6 +458,7 @@ var loadSpaces = function(){
     url: baseUrl,
     type: "GET",
   }).done(function(response){
+    console.log("Loading spaces... ", response);
     parkingSpots = response
     for(i = 0; i < parkingSpots.length; i++){
       var marker = new google.maps.Marker({
